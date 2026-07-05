@@ -18,8 +18,8 @@ compatibility: >-
 
 # Shopify SEO Metadata
 
-Safe-mode backfill of **missing** search-appearance metadata — the SEO title and
-meta description Google shows in the results snippet — across products,
+Safe-mode backfill of **missing** search-appearance metadata (the SEO title and
+meta description Google shows in the results snippet) across products,
 collections, pages, and blog articles. The core principle: **fill blanks, never
 overwrite**. A merchant's hand-written meta title is worth more than anything a
 model generates; this skill only touches fields that are empty.
@@ -34,7 +34,7 @@ FIND stage that scopes this FIX.
 Every skill that touches the Admin API opens with this stanza (minimum scopes
 for *this* skill below). Two lanes; pick one.
 
-**Lane A — custom-app token (scriptable).** In Shopify admin: Settings → Apps
+**Lane A: custom-app token (scriptable).** In Shopify admin: Settings → Apps
 and sales channels → Develop apps → create an app → grant the scopes below, then
 install and copy the Admin API access token. Export it; never write it to a
 committed file:
@@ -51,7 +51,7 @@ curl -s "https://$SHOPIFY_STORE/admin/api/2025-07/graphql.json" \
   -d '{"query":"{ shop { name } }"}'
 ```
 
-**Lane B — Shopify CLI OAuth (no stored token).** `shopify store auth --store
+**Lane B: Shopify CLI OAuth (no stored token).** `shopify store auth --store
 $SHOPIFY_STORE --scopes read_products,write_products,read_content,write_content`
 then `shopify store execute` to run a validated operation. Good for token-less
 stores where the owner logs in interactively.
@@ -60,8 +60,8 @@ stores where the owner logs in interactively.
 products and collections (both live on the products scope). Pages and blog
 articles need `read_content` + `write_content`. Scope only what the run touches.
 
-For the full Admin GraphQL schema, use Shopify's official AI toolkit plugin —
-that plugin gives your agent the API; this skill gives it the playbook.
+For the full Admin GraphQL schema, use Shopify's official AI toolkit plugin.
+That plugin gives your agent the API; this skill gives it the playbook.
 
 ## Recipes, not scripts
 
@@ -77,7 +77,7 @@ State this out loud before any run, and treat it as non-negotiable:
    entity, read `seo { title description }` (products/collections) or the
    `global.title_tag` / `global.description_tag` metafields (pages/articles)
    FIRST. A field with a non-empty value is skipped, full stop. An "overwrite
-   everything" mode is a different, deliberate job — it is never the default and
+   everything" mode is a different, deliberate job: it is never the default and
    a stranger running this skill does not get it for free.
 2. **Fill the two fields independently.** A product can have a title but no
    description. Generate and write only the blank one; leave the populated one
@@ -92,7 +92,7 @@ Never open a bulk write without a number in front of you.
    on, using the same skip logic.
 2. **Sanity-check the number against expectation.** A 40-product store reporting
    3,000 items needing SEO means the skip logic is wrong or you are pointed at
-   the wrong store. A count far above expectation means **STOP and re-scope** —
+   the wrong store. A count far above expectation means **STOP and re-scope**:
    do not proceed into a mutation run to "see what happens." An unscoped write
    over a catalog is not free to undo.
 3. Only after the count is sane do you generate and write.
@@ -106,25 +106,25 @@ project). A dead key discovered mid-run burns the whole queue as failed rows and
 wastes the crawl. One tiny completion up front is the cheapest insurance there
 is.
 
-## Generate, write, verify — per entity
+## Generate, write, verify: per entity
 
 For each entity type the shape is identical; only the read query, the write
 mutation, and the content source field differ (all four are in the reference):
 
-- **Products** — source = product title + body HTML. Write via `productUpdate`
+- **Products:** source = product title + body HTML. Write via `productUpdate`
   with `input.seo { title description }`.
-- **Collections** — source = collection title + description. Write via
+- **Collections:** source = collection title + description. Write via
   `collectionUpdate`, same `seo` input.
-- **Pages** — source = title + `bodySummary`. SEO lives in `global.title_tag`
+- **Pages:** source = title + `bodySummary`. SEO lives in `global.title_tag`
   (single line) and `global.description_tag` (multi line) metafields; write via
   `metafieldsSet`.
-- **Blog articles** — source = title + `summary` (+ parent blog title for
+- **Blog articles:** source = title + `summary` (+ parent blog title for
   context). Same `global.*_tag` metafields, same `metafieldsSet`.
 
-Log every write — resource id, field, old value, new value, status — to a CSV or
+Log every write (resource id, field, old value, new value, status) to a CSV or
 newline log as you go. That log is your evidence and your retry list.
 
-## Verify AFTER the write — via the Admin API, never the storefront
+## Verify AFTER the write: via the Admin API, never the storefront
 
 A mutation returning no `userErrors` is a *claim*, not proof. Confirm it:
 
@@ -132,7 +132,7 @@ A mutation returning no `userErrors` is a *claim*, not proof. Confirm it:
   metafields) for 2–3 written resources through
   `admin/api/2025-07/graphql.json` and confirm the value matches what you wrote.
 - **Read back through the Admin API, not the storefront.** The storefront `<meta>`
-  tags are CDN-cached and lie about freshness — a stale edge page will show the
+  tags are CDN-cached and lie about freshness: a stale edge page will show the
   old (or empty) tag long after the write landed, sending you chasing a
   non-bug. The Admin API is the source of truth.
 
@@ -143,7 +143,7 @@ Quality of the generated meta depends on three things the model can't infer:
 - **Feed the store's positioning into every prompt.** A one-paragraph brand
   description (who they sell to, the voice, the category) is the difference
   between on-brand copy and generic filler. A thin or wrong description produces
-  off-brand meta at scale — write a real one before a bulk run.
+  off-brand meta at scale: write a real one before a bulk run.
 - **Length targets.** SEO title ~50–60 characters (Google truncates past ~60);
   meta description ~150–160. Models cannot count characters reliably, so
   validate length in code and re-prompt anything over the limit rather than
@@ -161,7 +161,7 @@ Last verified: 2026-07-05. GraphQL pinned to Admin API 2025-07; Shopify
 deprecates versions on a rolling quarterly schedule, so verify the `seo` field
 and the resource mutations against
 [shopify.dev](https://shopify.dev/docs/api/admin-graphql) before trusting a
-version-specific claim. Read-only re-verification a stranger can run — confirm
+version-specific claim. Read-only re-verification a stranger can run, confirming
 the token reaches the store and the `seo` field resolves on products:
 
 ```bash

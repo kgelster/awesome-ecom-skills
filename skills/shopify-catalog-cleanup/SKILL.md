@@ -25,7 +25,7 @@ skill is built around one rule: **preview the count, then mutate.**
 
 ## Store access
 
-**Lane A — custom-app token (scriptable).** In Shopify admin: Settings → Apps
+**Lane A: custom-app token (scriptable).** In Shopify admin: Settings → Apps
 and sales channels → Develop apps → create an app → grant `read_products` and
 `write_products`, install, copy the Admin API access token. Export it; never
 write it to a committed file:
@@ -42,11 +42,11 @@ curl -s "https://$SHOPIFY_STORE/admin/api/2025-07/graphql.json" \
   -d '{"query":"{ shop { name } }"}'
 ```
 
-**Lane B — Shopify CLI OAuth (no stored token).** `shopify store auth --store
+**Lane B: Shopify CLI OAuth (no stored token).** `shopify store auth --store
 $SHOPIFY_STORE --scopes read_products,write_products` then `shopify store
 execute`. Good for token-less stores where the owner logs in interactively.
 
-For the full Admin GraphQL schema, use Shopify's official AI toolkit plugin —
+For the full Admin GraphQL schema, use Shopify's official AI toolkit plugin:
 that gives your agent the API; this skill gives it the playbook.
 
 ## The one rule: preview count, then mutate
@@ -57,7 +57,7 @@ count/preview query with the mutation it feeds. The discipline is not optional:
 1. **Run the count first.** `products(query:"…")` with a filter returns
    `count` and a page of titles. Read them.
 2. **Sanity-check the number against expectation.** If you expected ~40 dead
-   products and the count says 900, **stop and re-scope** — your filter is
+   products and the count says 900, **stop and re-scope**: your filter is
    wrong, not the store. A count far above expectation is a bug in your query.
 3. **Only then mutate,** and prefer the reversible path (below).
 
@@ -66,7 +66,7 @@ count/preview query with the mutation it feeds. The discipline is not optional:
 - **Archive, never delete.** Archiving a product (`status: ARCHIVED`) hides it
   from the storefront and channels but keeps the record, its handle, its history,
   and its URL-redirect potential. It is fully reversible: flip status back to
-  `ACTIVE` or `DRAFT`. Deletion is not reversible — the product, its variants,
+  `ACTIVE` or `DRAFT`. Deletion is not reversible: the product, its variants,
   and its metafields are gone. Default to archive; only delete when the owner
   explicitly asks and understands it is permanent.
 - **Tag what you touch.** When you bulk-archive, add a dated tag
@@ -83,7 +83,7 @@ count/preview query with the mutation it feeds. The discipline is not optional:
 
 The GraphQL blocks in the reference are copy-and-adapt starting points: your
 agent writes throwaway code per engagement against the current schema, runs it,
-discards it. Bulk mutations should batch and respect throttling — read the
+discards it. Bulk mutations should batch and respect throttling: read the
 `throttleStatus` in the `extensions` block and back off when
 `currentlyAvailable` drops, rather than hammering a fixed rate.
 
@@ -109,7 +109,7 @@ unarchive path is the same query on your tag, flipping status back. Recipes:
 
 Classic symptom: a store uninstalled a product-review app, but the theme still
 renders **empty star ratings** on every product. The app left its metafields
-behind — a review namespace plus rating/rating-count fields — and the theme's
+behind (a review namespace plus rating/rating-count fields), and the theme's
 star snippet reads them, finds `0`, and paints five empty stars.
 
 Fix safely:
@@ -124,12 +124,12 @@ Fix safely:
 3. **Delete via `metafieldsDelete`** in batches, keyed by owner GID +
    namespace + key. Preview the affected-count first, same as archiving.
 4. **Re-read** a few products to confirm the fields are gone, then reload the
-   storefront product — the empty stars should be gone (the theme snippet may
+   storefront product: the empty stars should be gone (the theme snippet may
    also need its now-dead reference removed; flag that to whoever owns the theme).
 
 **Matrixify warning:** a blank cell in a Matrixify update **deletes** that
 metafield, it does not skip it. That is a footgun for accidental deletion and a
-tool for deliberate bulk removal — either way, know which you are doing. For
+tool for deliberate bulk removal: either way, know which you are doing. For
 spreadsheet-driven bulk work and that trap, see `shopify-matrixify`.
 
 ### 3. HTML artifacts in descriptions
@@ -139,18 +139,18 @@ double-nested `<strong><strong>…`, whole paragraphs wrapped in bold, empty
 `<p></p>` / `<span></span>` tags, stray inline styles. Detect cheaply with an
 index scan (pull `descriptionHtml` for the scope, regex for the artifact
 patterns) rather than eyeballing products one by one. Fix by rewriting
-`descriptionHtml` per product via `productUpdate` — a targeted string transform,
+`descriptionHtml` per product via `productUpdate`: a targeted string transform,
 not a from-scratch rewrite that would lose real formatting.
 
 **Post-edit scan doctrine.** After ANY bulk content edit, sweep the affected
-scope again for residue — double-bold, orphaned tags, half-applied
-transforms — **before** you declare done. A bulk regex fix routinely leaves a
+scope again for residue: double-bold, orphaned tags, half-applied
+transforms, **before** you declare done. A bulk regex fix routinely leaves a
 new artifact on the 3% of products whose markup didn't match your assumption.
 The passing re-scan is the evidence; "the transform ran" is not.
 
 ## References
 
-- [references/recipes.md](references/recipes.md) — count-before-mutate archive
+- [references/recipes.md](references/recipes.md): count-before-mutate archive
   query + mutation, metafield-namespace inventory + `metafieldsDelete`,
   description-artifact scan + safe rewrite.
 
@@ -160,7 +160,7 @@ Last verified: 2026-07-05. GraphQL pinned to Admin API 2025-07; Shopify
 deprecates versions on a rolling quarterly schedule, so verify against
 [shopify.dev](https://shopify.dev/docs/api/admin-graphql) before trusting a
 version-specific claim. Read-only re-verification a stranger can run (a
-metafield-namespace inventory and an archived-product count — both non-mutating):
+metafield-namespace inventory and an archived-product count, both non-mutating):
 
 ```bash
 # how many products are already archived, and a metafield namespace sample

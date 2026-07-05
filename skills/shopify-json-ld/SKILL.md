@@ -23,11 +23,11 @@ theme can't generate on its own (Recipe, FAQPage, richer Article/Collection
 nodes), stored as JSON-LD in a per-entity metafield and rendered through a
 single Liquid snippet. The governing principle: **you add what's missing, you
 never duplicate what the theme already emits.** For meta tags, descriptions, and
-Open Graph — a different job — use the sibling skill **shopify-seo-metadata**.
+Open Graph (a different job), use the sibling skill **shopify-seo-metadata**.
 
 ## Store access
 
-**Lane A — custom-app token (scriptable).** In Shopify admin: Settings → Apps
+**Lane A: custom-app token (scriptable).** In Shopify admin: Settings → Apps
 and sales channels → Develop apps → create an app → grant this skill's minimum
 scopes, then install and copy the Admin API access token. Export it; never write
 it to a committed file:
@@ -49,17 +49,18 @@ curl -s "https://$SHOPIFY_STORE/admin/api/2025-07/graphql.json" \
   -d '{"query":"{ shop { name } }"}'
 ```
 
-**Lane B — Shopify CLI OAuth (no stored token).** `shopify store auth --store
+**Lane B: Shopify CLI OAuth (no stored token).** `shopify store auth --store
 $SHOPIFY_STORE --scopes read_products,read_metafields,write_metafields` then
 `shopify store execute`. Good for token-less stores where the owner logs in.
 
-For the full Admin GraphQL schema, use Shopify's official AI toolkit plugin —
+For the full Admin GraphQL schema, use Shopify's official AI toolkit plugin:
 that gives your agent the API; this skill gives it the playbook.
+
 
 ## Supplemental-only doctrine: audit before you generate
 
 Modern Shopify themes already emit Product schema on PDPs (price, variants,
-availability, and — with a review app like Judge.me, Yotpo, or Stamped —
+availability, and, with a review app like Judge.me, Yotpo, or Stamped,
 `aggregateRating`), plus Organization/WebSite sitewide and often
 Article/BreadcrumbList. **Duplicating any of it creates conflicting nodes that
 degrade eligibility, not improve it.**
@@ -75,7 +76,7 @@ curl -s "https://$SHOPIFY_STORE/products/<some-handle>" \
 Whatever the theme already covers, you do **not** touch. Supplemental schema is
 a *separate* type on the same page (a FAQPage or Recipe node alongside the
 theme's Product node), never a second Product node. If the theme's Product
-schema is broken or missing, fix the theme — don't paper over it with a
+schema is broken or missing, fix the theme. Don't paper over it with a
 duplicate.
 
 ## The metafield + snippet pattern
@@ -103,7 +104,7 @@ value at render time, so the stored string must already be valid JSON-LD.
 ```
 
 3. **Write the value with `metafieldsSet`** (GraphQL). It upserts by
-   namespace/key, so it updates an existing metafield instead of duplicating it —
+   namespace/key, so it updates an existing metafield instead of duplicating it:
    this sidesteps the classic REST trap of POSTing a second metafield when one
    already exists. Store the JSON compact (`JSON.stringify(obj)`, no pretty
    spacing). Preview the target count before a bulk write; a count far above
@@ -121,7 +122,7 @@ single malformed node fails the whole block. Two rules prevent nearly all of it:
   `@type: "Thing"`, never `Product`.
 - **No partial `VideoObject` nodes.** `VideoObject` requires `name`,
   `description`, `thumbnailUrl`, `uploadDate`, and a `contentUrl` or `embedUrl`.
-  If you don't have real video metadata, don't emit `VideoObject` — use `Thing`
+  If you don't have real video metadata, don't emit `VideoObject`: use `Thing`
   or an `ItemList` of `ListItem` entries instead.
 
 These two mistakes are the usual cause of "Invalid object type for field" and
@@ -133,7 +134,7 @@ Google **removed FAQ rich results for non-authoritative (commerce) sites in
 2026.** FAQPage markup on a product or store page will no longer render the
 expandable Q&A snippet in search. It's still valid structured data and still
 feeds machine understanding of the page, but **do not sell or promote it as a
-rich-result / SERP-visibility win** — that claim is stale. Recipe, and where
+rich-result / SERP-visibility win**. That claim is stale. Recipe, and where
 genuinely applicable Article, remain eligible; verify current eligibility per
 type against Google's docs (see Provenance) before promising a visible result.
 
@@ -142,15 +143,15 @@ type against Google's docs (see Provenance) before promising a visible result.
 When an agent generates FAQ or descriptive schema from product/page content, it
 **may only assert facts present in the source text.** No invented dimensions,
 weight limits, materials, or features. If the source description is thin,
-generate fewer entries — three grounded Q&As beat five with two fabricated
+generate fewer entries: three grounded Q&As beat five with two fabricated
 answers, and a fabricated spec in schema is a factual claim Google (and the
 customer) can catch. The prompt must prohibit fabrication explicitly and prefer
 "omit" over "guess". Per-entity prompt scaffolding is in the reference.
 
 ## Verify against the Admin API, not the storefront
 
-After a write, the storefront can serve the **old** JSON-LD for minutes to hours
-— Shopify's CDN caches the rendered page. Confirm the write by reading the
+After a write, the storefront can serve the **old** JSON-LD for minutes to hours:
+Shopify's CDN caches the rendered page. Confirm the write by reading the
 metafield **back through the Admin API**, not by curling the product page:
 
 ```bash
@@ -161,7 +162,7 @@ curl -s "https://$SHOPIFY_STORE/admin/api/2025-07/graphql.json" \
 ```
 
 The metafield value is ground truth. Once it's correct, the storefront will
-catch up on its own cache cycle — that lag is not a bug to chase.
+catch up on its own cache cycle: that lag is not a bug to chase.
 
 ## Non-destructive defaults
 
@@ -172,7 +173,7 @@ catch up on its own cache cycle — that lag is not a bug to chase.
 
 ## References
 
-- [references/pipeline-and-prompts.md](references/pipeline-and-prompts.md) — the
+- [references/pipeline-and-prompts.md](references/pipeline-and-prompts.md): the
   generation pipeline (fetch → filter → generate → validate → write) and
   per-entity prompt recipes (Product FAQ, Recipe, Collection, Page, Article),
   loaded on demand.
@@ -181,8 +182,8 @@ catch up on its own cache cycle — that lag is not a bug to chase.
 
 Last verified: 2026-07-05. GraphQL pinned to Admin API 2025-07; Shopify
 deprecates versions quarterly, so confirm the version before trusting a
-version-specific claim. **Google's rich-result eligibility changes** — FAQ rich
-results were deprecated for commerce sites, and other types shift too — so
+version-specific claim. **Google's rich-result eligibility changes**: FAQ rich
+results were deprecated for commerce sites, and other types shift too, so
 re-verify per schema type against
 [Google's structured-data docs](https://developers.google.com/search/docs/appearance/structured-data/search-gallery)
 before promising a visible SERP result. Canonical type definitions live at

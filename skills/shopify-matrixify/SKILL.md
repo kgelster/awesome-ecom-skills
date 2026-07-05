@@ -41,7 +41,7 @@ two places:
   throwaway code.
 
 No token lives in this skill. To verify a write landed, re-export the affected
-records and inspect the cells, or read them back through the Admin API — the
+records and inspect the cells, or read them back through the Admin API: the
 storefront is CDN-cached and lies about freshness.
 
 ## Safety doctrine
@@ -49,7 +49,7 @@ storefront is CDN-cached and lies about freshness.
 Read this section twice. Every rule here was learned by someone breaking a live
 store.
 
-1. **Back up first — the export IS the backup.** Before any bulk write, run a
+1. **Back up first: the export IS the backup.** Before any bulk write, run a
    full export of the entity you're about to touch (Products, Collections, etc.)
    and save the file. If the import goes wrong, that export is your restore path.
    There is no "undo import" button.
@@ -57,7 +57,7 @@ store.
    MERGE (except Orders/Draft Orders, which default to NEW). MERGE updates rows
    that exist, creates rows that don't, and leaves untouched anything you didn't
    put in the file. Stay on MERGE unless you have a specific reason not to.
-3. **A blank cell in an import DELETES that value — it does not skip it.** This
+3. **A blank cell in an import DELETES that value: it does not skip it.** This
    is the single most expensive trap in Matrixify. If your sheet has a
    `Metafield: custom.care [multi_line_text_field]` column and a product's cell
    is empty, the import writes *empty*, wiping the existing metafield. Same for
@@ -66,7 +66,7 @@ store.
    not blank cells. Absent column = untouched; present-but-blank column =
    deleted.
 4. **REPLACE is destructive by definition.** REPLACE deletes the existing record
-   (or nested set — variants, images, tags) and recreates it from *only* what's
+   (or nested set: variants, images, tags) and recreates it from *only* what's
    in the file. Anything not in the file is gone. Reach for REPLACE only when you
    truly want the file to be the complete new truth, and back up first.
 5. **Omitting a row does NOT revert a prior import.** Dropping a handle from your
@@ -78,7 +78,7 @@ store.
    does not protect tags, images, or variants. Those have their own command
    columns (`Tags Command`, `Image Command`, `Variant Command`) that default to
    MERGE only when the column is present. If you include a `Tags` column with an
-   empty `Tags Command`, behavior can surprise you — always pair `Tags` with an
+   empty `Tags Command`, behavior can surprise you, so always pair `Tags` with an
    explicit `Tags Command`.
 
 ## Row identification and adjacency
@@ -108,7 +108,7 @@ Set per row in the `Command` column.
 | DELETE | Delete the record; fails if not found |
 | IGNORE | Skip the row entirely (keep context rows in your sheet) |
 
-Nested data has its own command columns — same verbs, scoped to the nested set:
+Nested data has its own command columns, same verbs, scoped to the nested set:
 
 - **Tags Command** (products, customers, orders, blog posts): MERGE adds, DELETE
   removes listed, REPLACE sets the exact list.
@@ -127,7 +127,7 @@ When you write a CSV in code instead of editing Excel by hand:
 1. Double-quote every value; comma delimiter; UTF-8.
 2. First row is the header with **exact** Matrixify column names (case-
    insensitive, order-independent, unknown columns silently ignored).
-3. Include **only the columns the operation touches** — this is your primary
+3. Include **only the columns the operation touches**: this is your primary
    guard against the blank-cell-deletes trap.
 4. Sort rows by Handle/ID so multi-row records are adjacent; repeat the Handle on
    each variant/image row of the same product.
@@ -168,22 +168,22 @@ Bulk 301 redirects after a URL restructure (one entity, two columns):
 
 ## Sibling skills
 
-- **shopify-category-taxonomy** — Matrixify *cannot* mint category (taxonomy /
+- **shopify-category-taxonomy**: Matrixify *cannot* mint category (taxonomy /
   "Category metafields") values; those are reserved metaobjects set via the
   Admin API. Route any taxonomy-attribute rollout there.
-- Single-record edits (one product, one redirect) don't need a sheet — use the
+- Single-record edits (one product, one redirect) don't need a sheet: use the
   admin UI or the relevant entity skill's Admin API recipe.
 
 ## References
 
-- [references/column-reference.md](references/column-reference.md) — full column
+- [references/column-reference.md](references/column-reference.md): full column
   schemas per entity: products, variants, metafields, collections, redirects,
   customers, menus.
 
 ## Provenance and maintenance
 
-Last verified: 2026-07-05. The Matrixify sheet format is **app-versioned** — the
-vendor adds columns and adjusts behavior across releases — so treat any specific
+Last verified: 2026-07-05. The Matrixify sheet format is **app-versioned**: the
+vendor adds columns and adjusts behavior across releases, so treat any specific
 column name or default here as needing confirmation against the current
 [matrixify.app documentation](https://matrixify.app/documentation/) before you
 rely on it. Read-only re-verification a stranger can run:
@@ -193,7 +193,7 @@ rely on it. Read-only re-verification a stranger can run:
   and confirm the command verbs and column names still match this skill.
 - In any store with Matrixify installed, run **Export** for a single small
   entity (a handful of products), open the resulting sheet, and inspect the
-  actual column headers and command columns — the export is always authoritative
+  actual column headers and command columns: the export is always authoritative
   for that store's current format.
 
 This skill captures operational lessons the vendor docs don't stress; it is not a

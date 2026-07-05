@@ -6,7 +6,7 @@ and discards it. All queries here are **read-only**; this skill never mutates.
 
 ## The index query
 
-Pull only the fields that reveal PDP quality. Don't over-fetch — every extra
+Pull only the fields that reveal PDP quality. Don't over-fetch: every extra
 connection raises the query cost and slows a full crawl.
 
 ```graphql
@@ -60,16 +60,16 @@ Variables: `{ "first": 100, "after": null }`, then feed `endCursor` back as
 
 ### Scoping the crawl
 
-Narrow with the `query:` argument on `products` when you only need a slice — it
+Narrow with the `query:` argument on `products` when you only need a slice: it
 runs server-side and shrinks the crawl:
 
-- `query: "status:active"` — skip drafts/archived (live-storefront audit).
-- `query: "published_status:published"` — only what shoppers can reach.
-- `query: "vendor:'Acme'"` — audit one vendor's feed import in isolation.
-- `query: "created_at:>2026-06-01"` — audit a recent bulk import.
+- `query: "status:active"`: skip drafts/archived (live-storefront audit).
+- `query: "published_status:published"`: only what shoppers can reach.
+- `query: "vendor:'Acme'"`: audit one vendor's feed import in isolation.
+- `query: "created_at:>2026-06-01"`: audit a recent bulk import.
 
 But remember the sitemap caveat from the SKILL: to audit for *debris* (drafts,
-archived, unpublished), do **not** filter to published — that's where the
+archived, unpublished), do **not** filter to published: that's where the
 problems hide. Filter for a live-storefront pass; go unfiltered for a debris
 pass.
 
@@ -96,7 +96,7 @@ returns its cost in `extensions.cost`:
   the deep-read.
 - The leaky bucket refills at `restoreRate` points/sec. Read
   `throttleStatus.currentlyAvailable` from each response and pause when it drops
-  below your next query's cost, rather than sleeping a fixed interval — adaptive
+  below your next query's cost, rather than sleeping a fixed interval: adaptive
   pacing is faster and never trips the throttle.
 - On a `THROTTLED` error (or HTTP 429), back off ~2s and retry the same page.
   Don't advance the cursor on a throttle; you didn't get the page.
@@ -106,20 +106,20 @@ returns its cost in `extensions.cost`:
 ## Plus-store concurrency
 
 Shopify Plus stores get a **higher cost bucket** (roughly 2× the standard
-`maximumAvailable`), which allows modest concurrent pagination — several
+`maximumAvailable`), which allows modest concurrent pagination: several
 in-flight page requests instead of strictly serial. Read the actual
 `maximumAvailable` from `throttleStatus` rather than assuming a number; it varies
 by plan. Guard concurrency with a shared point-budget check (decrement the
 in-memory available-points count before each request, restore on the response's
 reported `currentlyAvailable`) so parallel requests don't collectively overrun
-the bucket. On a non-Plus store, stay serial — the standard bucket throttles
+the bucket. On a non-Plus store, stay serial: the standard bucket throttles
 under concurrency and you gain nothing.
 
 ## Bulk operations for very large catalogs
 
 For catalogs in the tens of thousands, a single `bulkOperationRunQuery` streams
 the whole `products` connection to a JSONL file with no pagination and no
-per-page cost management — one operation, poll for completion, download. It's the
+per-page cost management: one operation, poll for completion, download. It's the
 right tool when the index itself is large. It's still read-only. See
 [the bulk operations guide](https://shopify.dev/docs/api/usage/bulk-operations/queries).
 

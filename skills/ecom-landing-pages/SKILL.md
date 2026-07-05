@@ -10,7 +10,7 @@ description: >-
   The core insight: one product becomes dozens of pages by varying the ANGLE,
   not the product. Not for full-site information architecture, product detail
   pages, collection pages, or blog/SEO content (a landing page has ONE goal, no
-  site chrome) — use an SEO/content skill. Not for the ad or email creative
+  site chrome). Use an SEO/content skill. Not for the ad or email creative
   itself, though message match with the page matters.
 compatibility: >-
   Platform-neutral. No Admin API or credentials required. Ideation runs
@@ -47,7 +47,7 @@ and strips the chrome. Different rules.
 ### 1. Intake from the live storefront
 
 Read the store's real site: homepage, key product pages, collections, the
-sitemap if it helps. Never invent products, audiences, or offers — an empty
+sitemap if it helps. Never invent products, audiences, or offers: an empty
 intake field is a signal, not a license to make something up. Pull:
 
 - **Product / offer:** what sells, price, the single most important thing it does.
@@ -86,7 +86,7 @@ the stacking rules is in [references/build-blueprint.md](references/build-bluepr
 ### 3. Key each candidate to a traffic source
 
 **Traffic source is the primary angle selector.** It dictates the angle and the
-headline's job. Drop any idea that can't name a source — a page with no campaign
+headline's job. Drop any idea that can't name a source: a page with no campaign
 behind it is an orphan.
 
 - **Paid social, cold** → pain/emotional or audience. The viewer wasn't looking
@@ -109,7 +109,7 @@ Score each candidate 1–5 and rank. Intent match carries the most weight.
 
 ### 5. Output: lead with the ranked table
 
-One row per concept. This table is the deliverable — put it first.
+One row per concept. This table is the deliverable: put it first.
 
 | # | Concept | Archetype | Target | Core promise | Primary CTA | Traffic source |
 |---|---------|-----------|--------|--------------|-------------|----------------|
@@ -150,10 +150,10 @@ pre-launch checklist. Worked teardowns of live Mill pages are in
 
 ## References
 
-- [references/build-blueprint.md](references/build-blueprint.md) — full 8-archetype
+- [references/build-blueprint.md](references/build-blueprint.md): full 8-archetype
   taxonomy, the 10-section page anatomy, copy patterns, archetype deltas, and the
   pre-launch checklist.
-- [references/mill-teardown.md](references/mill-teardown.md) — archetype→URL map
+- [references/mill-teardown.md](references/mill-teardown.md): archetype→URL map
   and section-by-section teardowns of live Mill.com landing pages.
 
 ## Provenance and maintenance

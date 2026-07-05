@@ -2,7 +2,7 @@
 
 Mill.com is a DTC food-recycler brand that runs a mature landing-page system:
 roughly 40 production `/lp/` pages built off a single hardware product. It's a
-public, browsable example of the whole method — one product, dozens of pages,
+public, browsable example of the whole method: one product, dozens of pages,
 each keyed to a different traffic source and mindset. This file maps its pages
 to the archetypes and tears down two of them section by section, so the
 abstractions in the SKILL and build-blueprint have concrete ground truth.
@@ -33,9 +33,9 @@ program. Same device, many first sentences.
 
 ---
 
-## Teardown A — `/lp/busy-schedule` (pain/emotional, cold paid social)
+## Teardown A: `/lp/busy-schedule` (pain/emotional, cold paid social)
 
-- **Hero:** "Save time — and the planet." / "Mill makes recycling your food
+- **Hero:** "Save time, and the planet." / "Mill makes recycling your food
   scraps effortless and odorless." / CTA "Buy Mill."
 - **Angle:** pain/emotional reframe for cold traffic. The viewer wasn't
   searching for a food recycler; the felt benefit (save time) earns the click.
@@ -55,7 +55,7 @@ press) → risk reversal → cross-sell → implied final CTA.
 
 ---
 
-## Teardown B — `/lp/municipalities` (B2B/segment, long cycle)
+## Teardown B: `/lp/municipalities` (B2B/segment, long cycle)
 
 - **Hero:** "Mill for Municipalities" / "building a new system for food… scales
   to communities" / CTA "Stay in the loop" (email capture, not a cart).
@@ -79,7 +79,7 @@ CTA.
 
 When building a chosen concept, find the archetype's representative Mill page,
 open it, and note the section order and where proof sits relative to the ask.
-Don't copy the copy — copy the structure and the objection-handling discipline.
+Don't copy the copy: copy the structure and the objection-handling discipline.
 The two teardowns above bracket the range: a cold-traffic consumer page that
 leads with a felt benefit and a warm-cycle B2B page that leads with metrics.
 Most concepts land somewhere between them.

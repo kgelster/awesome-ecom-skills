@@ -33,7 +33,7 @@ flawless match, and let a human review pass catch the misfires.
 
 **Worked case (an automotive-lifestyle brand, anonymized).** A first pass used a
 single conservative 0.92 similarity threshold across all URL types. Out of 1,010
-dead URLs it produced 6 redirects — effectively nothing, and the merchant called
+dead URLs it produced 6 redirects: effectively nothing, and the merchant called
 it useless. Re-running with per-type thresholds plus cross-type fallbacks
 yielded 725 live redirects (~72% coverage) from the same export. The lesson is
 blunt: do not ship a conservative first pass. Precision-first thresholds look
@@ -82,12 +82,12 @@ go away, and no threshold removes it.
 Every matched path lands in exactly one bucket. This is what makes the pass
 auditable and the review scoped:
 
-1. **auto-apply** — cleared its type threshold. Still eyeballed before pushing,
+1. **auto-apply**: cleared its type threshold. Still eyeballed before pushing,
    but the default is to ship it.
-2. **review** — low-confidence matches, media assets (`.jpg`, `.mp4`,
+2. **review**: low-confidence matches, media assets (`.jpg`, `.mp4`,
    `/assets/`), malformed rows, and anything that fell through to the queue. A
    human sets or confirms the target here.
-3. **skip** — no-op, where the best target equals the source path. Dedupe source
+3. **skip**: no-op, where the best target equals the source path. Dedupe source
    paths so one dead URL yields one redirect.
 
 ## Review-pass budget
@@ -103,7 +103,7 @@ sign you tuned for precision and left coverage on the table.
 This skill reads inventory and writes redirects through the Admin API. Pick one
 lane; never write a token to a committed file.
 
-**Lane A — custom-app token.** In Shopify admin: Settings → Apps and sales
+**Lane A, custom-app token.** In Shopify admin: Settings → Apps and sales
 channels → Develop apps → create an app → grant this skill's minimum scopes
 (`read_products`, `read_url_redirects`, `write_url_redirects`), install, and copy
 the Admin API access token. Keep it in the env:
@@ -113,7 +113,7 @@ export SHOPIFY_STORE="your-store.myshopify.com"
 export SHOPIFY_ACCESS_TOKEN="<your Admin API access token>"   # env, not disk
 ```
 
-**Lane B — Shopify CLI OAuth (no stored token).** `shopify store auth --store
+**Lane B, Shopify CLI OAuth (no stored token).** `shopify store auth --store
 $SHOPIFY_STORE --scopes read_products,read_url_redirects,write_url_redirects`
 then `shopify store execute` to run a validated operation.
 
@@ -121,7 +121,7 @@ then `shopify store execute` to run a validated operation.
 
 - **Read before you write.** Pull the live inventory and the existing redirect
   list first. Before creating a redirect, query the existing set and skip
-  duplicates — `urlRedirectCreate` will error on a source path that already
+  duplicates: `urlRedirectCreate` will error on a source path that already
   redirects.
 - **Back up first.** Export the store's current redirects (Matrixify export or a
   `urlRedirects` dump) before a large write, so the pass is reversible.
@@ -134,7 +134,7 @@ then `shopify store execute` to run a validated operation.
 
 The GraphQL and matching logic in [references/pipeline.md](references/pipeline.md)
 are copy-and-adapt starting points. Your agent writes throwaway code per
-engagement against the current schema, runs it, and discards it — that keeps the
+engagement against the current schema, runs it, and discards it: that keeps the
 pass honest across Shopify's quarterly schema changes rather than shipping a
 binary that silently rots. The seven-step runbook, the matching-algorithm spec,
 the `urlRedirectCreate` and Matrixify apply paths, and the WordPress URL
@@ -142,8 +142,8 @@ transforms all live there.
 
 ## References
 
-- [references/pipeline.md](references/pipeline.md) — the 7-step runbook: GSC 404
-  export → inventory pull → matching-algorithm spec → apply → `curl -I` verify,
+- [references/pipeline.md](references/pipeline.md): the 7-step runbook, from GSC
+  404 export → inventory pull → matching-algorithm spec → apply → `curl -I` verify,
   plus WordPress pattern transforms.
 
 ## Provenance and maintenance

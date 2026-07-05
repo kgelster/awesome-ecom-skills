@@ -12,7 +12,7 @@ has alt.
 
 ---
 
-## Surface 1 — Product media (`productUpdateMedia`)
+## Surface 1: product media (`productUpdateMedia`)
 
 Product images are `MediaImage` nodes under a product's `media` connection.
 Filtering by `mediaContentType: IMAGE` keeps videos and 3D models out.
@@ -71,7 +71,7 @@ mutation SetProductMediaAlt($productId: ID!, $media: [UpdateMediaInput!]!) {
 }
 ```
 
-Variables (fill missing only — every `id` here came from the count as a
+Variables (fill missing only: every `id` here came from the count as a
 candidate):
 
 ```json
@@ -84,7 +84,7 @@ candidate):
 }
 ```
 
-Check `mediaUserErrors` on every response — an empty array is the only success.
+Check `mediaUserErrors` on every response: an empty array is the only success.
 Throttle writes (roughly one call per half-second) to stay under the Admin API
 rate limit; the GraphQL bucket is cost-based, so watch `throttleStatus` if you
 parallelize.
@@ -92,7 +92,7 @@ parallelize.
 ### Verify (read-only, Admin API)
 
 Re-query the products you touched and confirm `altText` is now populated. Do not
-check the storefront — its CDN serves stale alt for minutes.
+check the storefront; its CDN serves stale alt for minutes.
 
 ```graphql
 query VerifyProductMediaAlt($id: ID!) {
@@ -107,12 +107,12 @@ query VerifyProductMediaAlt($id: ID!) {
 
 ---
 
-## Surface 2 — Files library (`fileUpdate`)
+## Surface 2: Files library (`fileUpdate`)
 
 Files-library images are `MediaImage` nodes in the `files` connection (Content →
 Files in admin). The connection returns mixed types (`MediaImage`,
 `GenericFile`, `Video`, 3D models); filter to `MediaImage` with an `image/*` MIME
-type. `fileUpdate` only accepts `alt` for image files anyway — PDFs and videos
+type. `fileUpdate` only accepts `alt` for image files anyway: PDFs and videos
 are skipped.
 
 ### Count / preview (read-only)
@@ -194,7 +194,7 @@ query VerifyFileAlt($id: ID!) {
 - **Whitespace-only alt counts as missing.** Trim before testing; a single space
   is not real alt text.
 - **Decorative images want empty alt on purpose.** If an image is purely
-  decorative, leave `alt` empty rather than inventing a caption — but that is a
+  decorative, leave `alt` empty rather than inventing a caption, but that is a
   human call per image, not something a sweep should auto-fill.
 - **Two surfaces, independent alt.** The same underlying asset used as both a
   product image and a Files entry carries separate alt on each; fixing one does

@@ -21,7 +21,7 @@ accessibility requirement first (screen readers announce it) and an image-SEO
 signal second. This skill fills the gap for images that have none; it does not
 rewrite alt text that already exists.
 
-The sister backfill for SEO titles and descriptions is **shopify-seo-metadata** —
+The sister backfill for SEO titles and descriptions is **shopify-seo-metadata**:
 same safe-mode doctrine, different fields. The FIND stage (measuring how many
 images lack alt across the catalog before you commit to a sweep) belongs to
 **shopify-catalog-audit**.
@@ -31,10 +31,10 @@ images lack alt across the catalog before you commit to a sweep) belongs to
 Alt text lives in two distinct places on a Shopify store, and each takes a
 different mutation. Getting this wrong is the most common failure:
 
-- **Product media** — images attached to a product. Update with
+- **Product media:** images attached to a product. Update with
   `productUpdateMedia`, setting the `alt` field on each `MediaImage`. Scope:
   `write_products`.
-- **Files library images** — images in Content → Files (used in theme sections,
+- **Files library images:** images in Content → Files (used in theme sections,
   metaobjects, rich-text, collection banners). Update with `fileUpdate`, setting
   `alt`. Scope: `write_files`.
 
@@ -48,7 +48,7 @@ before you write anything. Full count/fetch/update recipes for both are in
 Every skill that touches the Admin API opens with this stanza. Two lanes; pick
 one.
 
-**Lane A — custom-app token (scriptable).** In Shopify admin: Settings → Apps
+**Lane A, custom-app token (scriptable).** In Shopify admin: Settings → Apps
 and sales channels → Develop apps → create an app → grant the minimum scopes
 below, then install and copy the Admin API access token. Export it; never write
 it to a committed file:
@@ -68,13 +68,13 @@ curl -s "https://$SHOPIFY_STORE/admin/api/2025-07/graphql.json" \
   -d '{"query":"{ shop { name } }"}'
 ```
 
-**Lane B — Shopify CLI OAuth (no stored token).** `shopify store auth --store
+**Lane B, Shopify CLI OAuth (no stored token).** `shopify store auth --store
 $SHOPIFY_STORE --scopes write_products,write_files` then `shopify store execute`
 to run a validated operation. Good for token-less stores where the owner logs in
 interactively.
 
-For the full Admin GraphQL schema, use Shopify's official AI toolkit plugin —
-that plugin gives your agent the API; this skill gives it the playbook.
+For the full Admin GraphQL schema, use Shopify's official AI toolkit plugin.
+That plugin gives your agent the API; this skill gives it the playbook.
 
 ## Recipes, not scripts
 
@@ -90,7 +90,7 @@ store; the difference between a clean sweep and a support ticket is discipline.
 
 1. **Fill missing only, never overwrite.** Treat an image as a candidate only
    when its `alt` is null or empty after trimming whitespace. An image that
-   already has alt text — even mediocre alt text — is out of scope. Overwriting
+   already has alt text, even mediocre alt text, is out of scope. Overwriting
    existing alt is a separate, deliberate decision a human makes per-image, never
    the default of a sweep.
 2. **Preview a read-only count first.** Before any mutation, run the count query
@@ -112,7 +112,7 @@ Alt text describes the image for someone who cannot see it. It is not a place to
 stuff keywords or repeat the product's sales pitch.
 
 - **Describe the image, not the marketing.** "Brown leather weekender bag with
-  brass zipper, side view" — not "premium handcrafted bag, free shipping, shop
+  brass zipper, side view", not "premium handcrafted bag, free shipping, shop
   now."
 - **Keep it under ~125 characters.** Screen readers read the whole string;
   long alt is punishing to listen to. Most screen-reader guidance treats ~125
@@ -135,7 +135,7 @@ writing. Canonical guidance: the W3C WAI
 
 ## References
 
-- [references/queries.md](references/queries.md) — count / fetch / update /
+- [references/queries.md](references/queries.md): count / fetch / update /
   verify recipes for both surfaces (product media via `productUpdateMedia`,
   Files library via `fileUpdate`), with pagination and MIME filtering.
 
@@ -145,8 +145,8 @@ Last verified: 2026-07-05. GraphQL pinned to Admin API 2025-07; Shopify
 deprecates versions on a rolling quarterly schedule, so confirm
 `productUpdateMedia` and `fileUpdate` against
 [shopify.dev](https://shopify.dev/docs/api/admin-graphql) before trusting a
-version-specific claim. Read-only re-verification a stranger can run — list
-product media and see which lack alt, mutating nothing:
+version-specific claim. Read-only re-verification a stranger can run, listing
+product media and seeing which lack alt while mutating nothing:
 
 ```bash
 curl -s "https://$SHOPIFY_STORE/admin/api/2025-07/graphql.json" \

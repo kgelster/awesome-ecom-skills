@@ -24,7 +24,7 @@ query DeadPreview {
 }
 ```
 
-Read `count`. If it is wildly above what you expected, your filter is wrong —
+Read `count`. If it is wildly above what you expected, your filter is wrong:
 re-scope, do not proceed. Sales history is not a product-search field; if "zero
 sales" is a criterion, pull it separately (orders/analytics) and intersect the
 ID lists yourself before archiving.
@@ -32,7 +32,7 @@ ID lists yourself before archiving.
 ### 1b. Archive one product (loop the ID list from 1a)
 
 `productUpdate` sets status and appends a dated undo tag in the same call. Fetch
-existing tags first (or read them from 1a) and pass the full merged list —
+existing tags first (or read them from 1a) and pass the full merged list:
 `tags` replaces, it does not append.
 
 ```graphql
@@ -62,7 +62,7 @@ query UndoPreview { productsCount(query: "tag:archived-2026-07-05") { count } }
 ```
 
 Then loop `productUpdate` with `status: ACTIVE` (or `DRAFT`) over those IDs.
-Deletion has no equivalent — that is why archive is the default.
+Deletion has no equivalent: that is why archive is the default.
 
 ## 2. Orphaned metafield debris (ghost review stars)
 
@@ -90,7 +90,7 @@ query MetafieldInventory {
 
 Note the exact `namespace.key` pairs you intend to remove (e.g. a rating and a
 rating-count under a reviews namespace). To count reach precisely, page through
-products and tally which carry those keys — do not assume every product has them.
+products and tally which carry those keys; do not assume every product has them.
 
 ### 2b. Delete the orphaned metafields in batches
 
@@ -118,7 +118,7 @@ mutation PurgeOrphans($ids: [MetafieldIdentifierInput!]!) {
 Re-read a few products to confirm the fields are gone, then reload a storefront
 product page (Admin API to confirm the data; storefront only to confirm the
 render). If the empty-star snippet persists, its now-dead metafield reference in
-the theme needs removing too — flag that to whoever owns the theme.
+the theme needs removing too; flag that to whoever owns the theme.
 
 **Matrixify note:** a blank metafield cell in a Matrixify update **deletes** the
 metafield rather than skipping it. Deliberate bulk removal can exploit that;
@@ -148,7 +148,7 @@ stray `style="…"` inline attributes.
 ### 3b. Targeted rewrite (never a from-scratch regen)
 
 Fix `descriptionHtml` per flagged product with a string transform that removes
-only the artifact and preserves real formatting — do not regenerate the
+only the artifact and preserves real formatting: do not regenerate the
 description, you will lose intentional structure.
 
 ```graphql

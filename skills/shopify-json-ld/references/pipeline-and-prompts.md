@@ -15,11 +15,11 @@ Worked numbers below come from a JSON-LD rollout on a baby-gear DTC brand
 Five stages, each with a checkpoint before the next:
 
 1. **Fetch** entities from the Admin API, paginated (250/page). Products,
-   collections (both custom and smart — they're separate resources), pages, and
+   collections (both custom and smart: they're separate resources), pages, and
    blog articles if the store blogs.
 2. **Filter** to entities worth marking up (see Filtering below). Skip utility
    pages, gift cards, drafts, and duplicates.
-3. **Generate** the JSON-LD per entity — deterministically where the shape is
+3. **Generate** the JSON-LD per entity: deterministically where the shape is
    fixed (CollectionPage, Organization), with the model only where judgment is
    needed (FAQ Q&As, choosing an @type for a freeform page).
 4. **Validate** every generated object *before* writing: parse it as JSON, then
@@ -70,12 +70,12 @@ a short delay between them, and exponential backoff on 429/`THROTTLED`.
 
 ### Filtering
 
-**Skip these pages** — flag any handle containing `subscribe`, `confirmation`,
+**Skip these pages:** flag any handle containing `subscribe`, `confirmation`,
 `success`, `test`, `copy-of`, `nofraud`, or a fraud/cookie-declaration slug, plus
 non-English translation pages unless you're targeting that market, and
 abbreviated policy duplicates.
 
-**Skip these products** — gift cards (no meaningful content), draft/unpublished
+**Skip these products:** gift cards (no meaningful content), draft/unpublished
 (`publishedAt` null), and inventory-planner or `copy-of` duplicate SKUs.
 
 Review the full page list before running. Filtering wrong is how utility pages
@@ -85,7 +85,7 @@ end up with schema that confuses crawlers.
 
 ## Per-entity prompt recipes
 
-Use the model **only for judgment** — grounded Q&A wording, @type selection.
+Use the model **only for judgment**: grounded Q&A wording, @type selection.
 Fixed-shape schema (Organization, most CollectionPage fields) is a deterministic
 transform; don't route it through the model. Every prompt carries the two hard
 rules from the skill (no bare `Product`, no partial `VideoObject`) and the
@@ -102,7 +102,7 @@ State verbatim, every entity type:
   with @type "Thing".
 - NEVER use @type "VideoObject" without ALL of: name, description, thumbnailUrl,
   uploadDate, and contentUrl or embedUrl.
-- Assert ONLY facts present in the supplied content. Invent nothing — no
+- Assert ONLY facts present in the supplied content. Invent nothing: no
   dimensions, weights, materials, or capacities not in the source text. If the
   content is thin, produce fewer items. Omitting beats guessing.
 ```
@@ -115,11 +115,11 @@ Request **3-5 product-specific Q&As** as a FAQPage. Prohibit shipping/returns/
 warranty/discount questions (those are site-wide, not product-specific) and
 generic "check the product details" non-answers. Thin description → 3 max, or
 skip. **Remember FAQ no longer earns a rich result for commerce sites** (see
-skill) — generate it for machine understanding, not for a SERP promise.
+skill). Generate it for machine understanding, not for a SERP promise.
 
 Category detection is per-store: the baby-gear rollout mapped ~18 categories
 (carrier, diaper bag, stroller, …) off title/type/tags. A jewelry or food store
-needs its own mapping — analyze the catalog's product types and tags first.
+needs its own mapping: analyze the catalog's product types and tags first.
 
 For flagship/hero products, an owner may supply **pre-approved** FAQ copy. Build
 that FAQPage by hand from the approved Q&As, write it directly, and exclude that
@@ -128,12 +128,12 @@ handle from the model batch.
 ### Recipe
 
 For stores whose content is genuinely recipe-shaped (food, supplements, DIY),
-Recipe schema is one of the types that **still earns a rich result** — worth
+Recipe schema is one of the types that **still earns a rich result**, worth
 doing well. Require the real fields: `name`, `recipeIngredient` (a list),
 `recipeInstructions` (`HowToStep` items), and where present `totalTime`
 (ISO-8601 duration), `recipeYield`, `nutrition`. Pull all of it from the source
 content; if ingredients or steps aren't actually in the text, it isn't a recipe
-page — don't force the type.
+page. Don't force the type.
 
 ### Collection
 
@@ -149,7 +149,7 @@ Let the model pick the @type from content: `AboutPage` (about/team), `ContactPag
 
 ### Blog article
 
-Supplemental `BlogPosting` — the theme usually handles the base `Article`. Add
+Supplemental `BlogPosting`: the theme usually handles the base `Article`. Add
 `articleSection`, `keywords` (4-8 specific terms drawn from the actual copy),
 `about` (a `Thing`), `isPartOf` (the Blog), and `publisher` (Organization with
 `logo`). Keywords must come from the real content, not the model's imagination.
@@ -164,6 +164,6 @@ forbidden `"Product"` / partial `"VideoObject"` strings.
 
 After the full run: spot-check 5-10 live URLs in Google's Rich Results Test,
 confirm your backup row count matches the entities written, and read a sample of
-metafields **back through the Admin API** (not the storefront — the CDN lies)
+metafields **back through the Admin API** (not the storefront: the CDN lies)
 to confirm the values landed. Watch Search Console for structured-data errors
 over the following couple of weeks.

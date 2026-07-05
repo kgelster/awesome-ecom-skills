@@ -11,14 +11,14 @@ concept spread or building a chosen page.
 
 Every landing page is one of these angles. During ideation, walk each archetype
 against the intake and ask "is there a page here?" One page can stack
-archetypes — lead with the dominant one, because the headline gets to make
+archetypes: lead with the dominant one, because the headline gets to make
 exactly one promise. The examples are live Mill.com pages.
 
 | # | Archetype | Definition | When to reach for it | Mill examples |
 |---|-----------|------------|----------------------|---------------|
 | 1 | **Audience / persona** | Speaks to one identity group; the headline names them | A distinct buyer segment with its own motivation | `/lp/chickens` ("Feed your flock"), `/lp/offices`, `/lp/commercial` |
 | 2 | **Use-case** | Built around one job the product does | The product solves several jobs; a segment cares about one | `/lp/food-grounds`, `/lp/gardens-archive`, `/lp/chickens` (as treats) |
-| 3 | **Pain / emotional reframe** | Leads with a felt problem or emotion, then resolves it | Cold traffic that doesn't know the category | `/lp/busy-schedule` ("Save time — and the planet"), `/lp/one-easy-thing` (climate guilt → empowerment) |
+| 3 | **Pain / emotional reframe** | Leads with a felt problem or emotion, then resolves it | Cold traffic that doesn't know the category | `/lp/busy-schedule` ("Save time, and the planet"), `/lp/one-easy-thing` (climate guilt → empowerment) |
 | 4 | **Location / geo** | Localized to a city or region; local proof + local logistics | Geo-targeted ads, local programs, regional PR | `/lp/nyc`, `/lp/la`, `/lp/nyc-curbside-compost` |
 | 5 | **Event / seasonal / promo** | Tied to a date, sale, or in-person moment; urgency-driven | A campaign window or a live event | `/lp/memorial-day-sale`, `/lp/event-tabling`, `/lp/big-night` |
 | 6 | **Offer / trial / guarantee** | Leads with risk-reversal or a specific offer | Conversion-stage traffic that needs a nudge | `/lp/free-trial`, `/lp/90-day-mbg`, `/lp/event-two-month-trial` |
@@ -37,7 +37,7 @@ Cross the intake against the taxonomy to produce candidates:
 
 1. For each audience, pain, use-case, geo, offer, event, and segment from
    intake, draft a one-line concept under the matching archetype.
-2. Anchor each to a traffic source (see the SKILL body — traffic source is the
+2. Anchor each to a traffic source (see the SKILL body: traffic source is the
    angle selector). The source decides the angle and the headline's job.
 3. Don't stop at the obvious. A single food-recycler product became pages for
    chickens, gardens, gifting, municipalities, and an affiliate program. Push
@@ -50,7 +50,7 @@ Cross the intake against the taxonomy to produce candidates:
 Once a concept is chosen, build it on this skeleton. Order matters: it walks a
 cold visitor from hook → proof → mechanics → trust → action.
 
-1. **Hero** — the only part guaranteed to be seen.
+1. **Hero:** the only part guaranteed to be seen.
    - **Headline:** one benefit-first promise, tuned to the angle.
    - **Subheadline:** expands the promise; names the mechanism or removes the
      top objection.
@@ -64,7 +64,7 @@ cold visitor from hook → proof → mechanics → trust → action.
    for an unfamiliar category.
 4. **Use-cases:** show the product in the visitor's specific context. On an
    audience/use-case page, go deep on their job here.
-5. **Social proof, tiered** — strongest-to-relatable, stacked:
+5. **Social proof, tiered**, strongest to relatable, stacked:
    - **Awards** (an industry "Most Innovative" nod)
    - **Press logos** ("Featured in": major outlets)
    - **Verified customer testimonials** (named, verified-buyer badge; quote the
@@ -101,7 +101,7 @@ cold visitor from hook → proof → mechanics → trust → action.
 
 ## Copy patterns (observed, reusable)
 
-- **Benefit-first headline with a twist:** "Save time — and the planet." "Make
+- **Benefit-first headline with a twist:** "Save time, and the planet." "Make
   food. Not waste." Promise plus a small surprise.
 - **Name the audience in the headline:** "Feed your flock." Instant relevance
   for an audience page.

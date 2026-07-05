@@ -15,7 +15,7 @@ analysis.
   the gaps / anomalies / debris".
 - The catalog is larger than fits comfortably in context, or large enough that
   reading every PDP is slow and expensive.
-- The problem class is enumerable up front — you can describe what a "defect"
+- The problem class is enumerable up front: you can describe what a "defect"
   looks like well enough to index for it (missing photos, thin descriptions,
   pricing anomalies, taxonomy gaps).
 
@@ -32,29 +32,29 @@ analysis.
 ## The loop
 
 **1. Build the cheap index.**
-Deterministic code paginates the catalog and computes per-product flags — the
+Deterministic code paginates the catalog and computes per-product flags: the
 structural facts that reveal where problems live without reading every PDP.
 Missing/low image count, empty/thin description, $0 or inverted pricing, empty
 type/vendor, plus status context. Code answers what code can. The output is a
-compact flag table, one row per product — not the raw catalog.
+compact flag table, one row per product, not the raw catalog.
 
 **2. Hypothesize on the index.**
 The model reasons over the flag table (not the raw PDPs) to rank where problems
 cluster. **Every hypothesis must carry a stated reason. No reason, drop it.**
 Unjustified flags are noise that cost expensive deep-reads downstream. Aim for
 patterns over rows: "all products from one vendor imported the same week have
-zero images — broken feed" is worth more than a flat list of imageless products.
+zero images, broken feed" is worth more than a flat list of imageless products.
 
 **3. Deep-read only the targeted slice.**
 Feed the model full detail for only the products the justified hypotheses pointed
 at. This is where the frontier model and the real tokens go. **Never widen back
-out to the whole catalog "just to be safe"** — that defeats the method and the
+out to the whole catalog "just to be safe"**: that defeats the method and the
 budget.
 
 **4. Verify against ground truth.**
 Confirm each surviving finding by re-querying the live Shopify Admin API. Not
 against the model's own assertion, not against the index, and **not against the
-sitemap** — the sitemap is published-only and misses the drafts and archived
+sitemap**: the sitemap is published-only and misses the drafts and archived
 products where debris hides. The passing Admin-API read is the evidence.
 
 ## Discipline rails

@@ -5,14 +5,14 @@ store and the current schema, runs once, and discards. Read the parent
 [SKILL.md](../SKILL.md) for the recall-over-precision doctrine, the per-type
 thresholds, and the cross-type fallback order these steps implement.
 
-## Step 1 — Get the 404 list
+## Step 1: Get the 404 list
 
 Source of record is Google Search Console: **Pages → Not found (404) → Export**.
 That gives a `Table.csv` with a `URL` column. Any one-URL-per-line list works too
 (server logs, a crawler's broken-link report). Put the raw export somewhere
 scoped to this engagement.
 
-## Step 2 — Normalize and classify each path
+## Step 2: Normalize and classify each path
 
 Shopify redirects match on **path only**, so reduce every URL to a bare path
 before matching:
@@ -30,12 +30,12 @@ Then classify by prefix and route:
 - `/blogs/…` → blog
 - `/pages/…` → page
 - Rewrite legacy `/collections/X/products/Y` to `/products/Y` **for matching
-  only** — keep the original path as the redirect source so the real dead URL is
+  only**, keeping the original path as the redirect source so the real dead URL is
   what gets caught.
 - Media assets (`.jpg`, `.png`, `.mp4`, `/assets/…`) and malformed rows go
   straight to the review/skip buckets. Don't try to fuzzy-match an image.
 
-## Step 3 — Pull live inventory via Admin GraphQL
+## Step 3: Pull live inventory via Admin GraphQL
 
 Fetch every candidate target the store currently serves: active product handles,
 collection handles, page handles, blog article handles. Paginate 250 per page and
@@ -54,10 +54,10 @@ query($cursor: String) {
 ```
 
 Collections use `collections`, pages use `pages`, articles use `articles`
-(or walk `blogs { articles }`). Store each type's handle list separately — the
+(or walk `blogs { articles }`). Store each type's handle list separately: the
 matcher only ever compares a dead path against inventory of its own type first.
 
-## Step 4 — Match: the algorithm spec
+## Step 4: Match, the algorithm spec
 
 Compare each normalized dead path against same-type inventory with a string
 similarity ratio (Python's `difflib.SequenceMatcher` is the reference
@@ -76,22 +76,22 @@ cross-type fallback order from the SKILL body.
 a product→product match, require a token-subset test: split both slugs on
 hyphens, and accept only if one slug's token set is a subset of the other's
 (`racing-jacket` ⊂ `mens-racing-jacket-black`). If neither is a subset, the two
-are probably different products that merely share a suffix — let it fall through
+are probably different products that merely share a suffix, so let it fall through
 to the collection fallback rather than shipping a wrong product.
 
-## Step 5 — Bucket and dedupe
+## Step 5: Bucket and dedupe
 
 Write each result to one of three buckets (see SKILL body): **auto-apply**
 (cleared threshold), **review** (low-confidence, media, malformed, fell-through),
 **skip** (target equals source). Dedupe source paths so a dead URL yields exactly
 one redirect. Keep the buckets as CSVs so a human can read and edit them.
 
-## Step 6 — Apply
+## Step 6: Apply
 
 Two routes. Pick one; both start by reading the existing redirect set so you
 never collide with a redirect that already exists.
 
-**Route A — Admin API, one redirect per row.** Query existing redirects first,
+**Route A, Admin API, one redirect per row.** Query existing redirects first,
 skip any source path already mapped, then create the rest.
 
 ```graphql
@@ -107,10 +107,10 @@ mutation($path: String!, $target: String!) {
 }
 ```
 
-`urlRedirectCreate` errors on a duplicate source path — that's why the existing
+`urlRedirectCreate` errors on a duplicate source path: that's why the existing
 query runs first. Log per-row results so a partial failure is visible.
 
-**Route B — Matrixify Redirects sheet (bulk).** Hand the final map to the sibling
+**Route B, Matrixify Redirects sheet (bulk).** Hand the final map to the sibling
 `shopify-matrixify` skill. The Redirects entity is two columns:
 
 ```csv
@@ -120,14 +120,14 @@ query runs first. Log per-row results so a partial failure is visible.
 
 Export the store's existing redirects as a backup first, run Matrixify's analyze
 step before importing, and download the Import Results file after to confirm row
-counts. (Column headers vary slightly by Matrixify version — verify against the
+counts. (Column headers vary slightly by Matrixify version, so verify against the
 current Redirects sheet template.)
 
-## Step 7 — Verify (mandatory before claiming done)
+## Step 7: Verify (mandatory before claiming done)
 
 - **Count.** Re-query `urlRedirects` (or read the Matrixify Import Results row
   counts) and compare created-vs-expected. A gap means duplicates were skipped or
-  a create failed — reconcile it, don't wave it off.
+  a create failed: reconcile it, don't wave it off.
 - **Spot-check 5–10 source paths** against the live storefront:
 
   ```bash
@@ -153,7 +153,7 @@ before matching:
   `<slug>`, match as a product, and set the redirect source to the original
   `/product/<slug>` path.
 - **Author/tag/paged archives** (`/author/…`, `/tag/…`, `/page/2/`): usually no
-  clean target — send to review, or map tag archives to the nearest collection.
+  clean target, so send to review, or map tag archives to the nearest collection.
 
 Run the transform in Step 2 (normalize/classify), keeping the original WordPress
 path as the redirect source and feeding the extracted slug into the Step 4

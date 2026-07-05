@@ -10,9 +10,9 @@ Two storage shapes to keep straight:
 - **Products and collections** expose a first-class `seo { title description }`
   field, written through `productUpdate` / `collectionUpdate`.
 - **Pages and blog articles** have no `seo` field. Their search-appearance
-  metadata lives in two reserved metafields — `global.title_tag`
+  metadata lives in two reserved metafields, `global.title_tag`
   (`single_line_text_field`) and `global.description_tag`
-  (`multi_line_text_field`) — read and written like any other metafield.
+  (`multi_line_text_field`), read and written like any other metafield.
 
 "Missing" means the field is absent or an empty string. That test is the entire
 safe-mode contract; apply it identically in the count and in the write loop.
@@ -39,7 +39,7 @@ query($cursor: String) {
 
 **Count needing a backfill** (client-side over the paginated read): increment
 when `descriptionHtml` is non-empty (something to summarize) AND at least one of
-`seo.title` / `seo.description` is blank. This is your preview number — sanity
+`seo.title` / `seo.description` is blank. This is your preview number: sanity
 check it before writing.
 
 **Write (fill only the blank subfield):**
@@ -61,7 +61,7 @@ mutation($input: ProductInput!) {
 
 `seo` is a whole-object write: pass the existing value back for the subfield that
 was already populated, and only the newly generated string for the one that was
-blank. A `userErrors` array of length 0 is a *claim* — read `product { seo }`
+blank. A `userErrors` array of length 0 is a *claim*: read `product { seo }`
 back to confirm.
 
 ---
@@ -147,7 +147,7 @@ mutation($metafields: [MetafieldsSetInput!]!) {
 ] }
 ```
 
-Only include the metafield(s) whose field was blank — `metafieldsSet` overwrites
+Only include the metafield(s) whose field was blank: `metafieldsSet` overwrites
 any key you pass, so passing a key you meant to leave alone would clobber a
 human-written value. Send the blank one(s) only.
 
@@ -210,13 +210,13 @@ Source content: {BODY_OR_SUMMARY}
 
 Three things the model can't infer, so you must supply or enforce them:
 
-- **Positioning is load-bearing.** The `{ONE_PARAGRAPH_BRAND_DESCRIPTION}` — who
-  the store sells to, its voice, its category — is what separates on-brand copy
+- **Positioning is load-bearing.** The `{ONE_PARAGRAPH_BRAND_DESCRIPTION}` (who
+  the store sells to, its voice, its category) is what separates on-brand copy
   from generic filler. A thin or wrong description yields off-brand meta at
   scale. Write a real one.
 - **Enforce length in code.** Models cannot count characters. After generation,
   measure both strings; if either is over its limit, re-prompt with "your
-  previous answer was N characters, over the limit — rewrite to fit." Do not
+  previous answer was N characters, over the limit; rewrite to fit." Do not
   trust the stated limit alone.
 - **Keyword restraint.** One primary keyword, front-loaded, written for a human
   reading a search result. Repetition and caps read as spam to both Google and

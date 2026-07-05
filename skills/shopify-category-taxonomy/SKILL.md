@@ -3,17 +3,17 @@ name: shopify-category-taxonomy
 description: >-
   Use when you assign the Shopify Standard Product Taxonomy category, "set the
   product category", "categorize the catalog", or fill the category / taxonomy
-  metafields — the admin "Category metafields" panel (Color, Size, Material,
+  metafields: the admin "Category metafields" panel (Color, Size, Material,
   Caffeine content), a.k.a. product category attributes / taxonomy attributes,
   including the attributes a Google feed asks for.
   Covers bulk classification, discovering a category's attributes and allowed
   values, minting the reserved value metaobjects, and writing them safely. Also:
   "category metafields show blank/null", "my Color attribute won't save". Not
-  for bulk CSV data loads (Matrixify can't do this — see shopify-matrixify for
+  for bulk CSV data loads (Matrixify can't do this; see shopify-matrixify for
   bulk data).
 compatibility: >-
   Shopify Admin API 2025-07 (GraphQL). Needs read_products + write_products AND
-  read_metaobjects + write_metaobjects — the metaobjects scopes are the #1 trap:
+  read_metaobjects + write_metaobjects. The metaobjects scopes are the #1 trap:
   without read_metaobjects the values return null and look unwritable.
 ---
 
@@ -21,7 +21,7 @@ compatibility: >-
 
 Two jobs that chain together: **assign** a product's Standard Product Taxonomy
 category (Part 1), then **fill** the category metafields that category exposes
-(Part 2). You cannot do Part 2 until Part 1 is true — the "Category metafields"
+(Part 2). You cannot do Part 2 until Part 1 is true: the "Category metafields"
 panel only exists once a product is assigned to a category. Bulk CSV data work
 lives in the sibling `shopify-matrixify`; the one thing Matrixify **cannot** do
 is mint the reserved value metaobjects Part 2 needs, which is the entire reason
@@ -29,7 +29,7 @@ this skill exists.
 
 ## Store access
 
-**Lane A — custom-app token (scriptable).** Shopify admin → Settings → Apps and
+**Lane A: custom-app token (scriptable).** Shopify admin → Settings → Apps and
 sales channels → Develop apps → create an app → grant the four scopes below →
 install → copy the Admin API access token. Export it; never write it to disk:
 
@@ -44,11 +44,11 @@ curl -s "https://$SHOPIFY_STORE/admin/api/2025-07/graphql.json" \
 Minimum scopes: **`read_products`, `write_products`, `read_metaobjects`,
 `write_metaobjects`.** The metaobjects pair is not optional (see the null trap).
 
-**Lane B — Shopify CLI OAuth (no stored token).** `shopify store auth --store
+**Lane B: Shopify CLI OAuth (no stored token).** `shopify store auth --store
 $SHOPIFY_STORE --scopes read_products,write_products,read_metaobjects,write_metaobjects`
 then `shopify store execute`. Good for token-less stores where the owner logs in
 interactively. For the full Admin GraphQL schema, use Shopify's official AI
-toolkit plugin — that gives your agent the API; this skill gives it the playbook.
+toolkit plugin. That gives your agent the API; this skill gives it the playbook.
 
 ## Recipes, not scripts
 
@@ -65,14 +65,14 @@ runs, and discards. Two rules keep that safe:
 Verify against ground truth via the Admin API, not the storefront (CDN-cached,
 lies about freshness). Never print or commit the token.
 
-## Part 1 — Assign the category
+## Part 1: Assign the category
 
 Set each product's `category` field to a Standard Product Taxonomy category via
 `productUpdate` (or the Matrixify `Category` column for a pure bulk load).
 
 **CRITICAL: verify every category ID against the official taxonomy source; never
 guess an ID.** A guessed taxonomy ID resolves to the *wrong* category or a dead
-node, and it fails silently — the product looks categorized but every downstream
+node, and it fails silently: the product looks categorized but every downstream
 attribute, filter, and feed mapping is now wrong. Guessed IDs have burned real
 product feeds. Resolve the ID by `search:` against `taxonomy { categories }`
 (Part 2 step 1 shows the query), or from the official taxonomy repo linked in
@@ -98,7 +98,7 @@ mutation Assign($id: ID!, $cat: ID!) {
 }
 ```
 
-## Part 2 — Fill the category metafields
+## Part 2: Fill the category metafields
 
 A category metafield is **not** a plain text/choice value. It is a metafield in
 the reserved `shopify` namespace, of type `list.metaobject_reference`, whose
@@ -114,7 +114,7 @@ Product
                  └─ taxonomy_reference ─▶ TaxonomyValue/26137  (global)
 ```
 
-These value metaobjects are **minted on demand** — a store only holds
+These value metaobjects are **minted on demand**: a store only holds
 metaobjects for values it has actually used. A brand-new value must be created
 before you can reference it. That mint-then-reference step is what Matrixify
 cannot do.
@@ -122,7 +122,7 @@ cannot do.
 **Top 5 gotchas (fuller list in the reference):**
 
 1. **The null/scope trap.** Without `read_metaobjects`, the value metaobjects
-   return `null` from `node()`, `references`, and `metaobjectDefinitions` — the
+   return `null` from `node()`, `references`, and `metaobjectDefinitions`: the
    whole feature looks read-only. With the scope they resolve. Minting needs
    `write_metaobjects`.
 2. **A `TaxonomyValue` GID is rejected on write.** `metafieldsSet` demands the
@@ -163,7 +163,7 @@ query {
 ```
 
 Record per attribute: the **metafield key** (the attribute handle,
-lowercased-hyphenated — confirm it by reading an already-set product in step 4;
+lowercased-hyphenated, confirm it by reading an already-set product in step 4;
 the Color attribute's key is `color-pattern`, not `color`) and the **value name →
 TaxonomyValue GID** map.
 
@@ -199,7 +199,7 @@ mutation S($m: [MetafieldsSetInput!]!) {
 
 Emit only non-blank values. Abort on first-batch errors.
 
-**4. Verify by reading back resolved labels** — not by trusting the write's
+**4. Verify by reading back resolved labels**, not by trusting the write's
 `userErrors: []`.
 
 ```graphql
@@ -212,7 +212,7 @@ Spot-check several products; confirm every name resolves to what you intended.
 
 ## References
 
-- [references/gotchas-and-scoping.md](references/gotchas-and-scoping.md) —
+- [references/gotchas-and-scoping.md](references/gotchas-and-scoping.md):
   gotchas 6-10 (freeform labels, per-type mint fields, multi-category scoping),
   which surface each attribute reaches (Google feed vs Search & Discovery vs
   JSON-LD), and two worked examples with real numbers.
@@ -224,7 +224,7 @@ deprecates versions on a rolling quarterly schedule, so verify field shapes
 against [shopify.dev](https://shopify.dev/docs/api/admin-graphql) and the
 metafields/metaobjects docs before trusting a version-specific claim. The
 category IDs and taxonomy values come from Shopify's
-[Standard Product Taxonomy](https://github.com/Shopify/product-taxonomy) — the
+[Standard Product Taxonomy](https://github.com/Shopify/product-taxonomy): the
 canonical source to verify an ID against; never guess one.
 
 Read-only re-verification a stranger can run (no writes):

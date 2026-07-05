@@ -1,7 +1,7 @@
 <!-- ship the cart, not the code -->
 
 <p align="center">
-  <img src="./media/hero.png" alt="awesome-ecom-skills — Shopify agency playbooks as agent skills" width="840">
+  <img src="./media/hero.png" alt="awesome-ecom-skills: Shopify agency playbooks as agent skills" width="840">
 </p>
 
 <p align="center">
@@ -16,7 +16,7 @@
   <b>Shopify's plugin gives your agent the API. This gives it the playbook.</b>
 </p>
 
-> Shopify's [official AI toolkit](https://shopify.dev) hands your coding agent the Admin API — the schema, the mutations, the reference. What it doesn't hand over is *judgment*: which category ID not to guess, why a blank cell in a Matrixify import silently deletes a metafield, how to backfill SEO metadata without overwriting a human's copy, where the ghost review stars come from. This repo packages that judgment as [Agent Skills](https://agentskills.io): focused, model-readable playbooks your agent loads on demand when you point it at a real store. It's a companion to the official plugin, not a replacement — that one gives your agent the API, this gives it the playbook.
+> Shopify's [official AI toolkit](https://shopify.dev) hands your coding agent the Admin API: the schema, the mutations, the reference. What it doesn't hand over is *judgment*: which category ID not to guess, why a blank cell in a Matrixify import silently deletes a metafield, how to backfill SEO metadata without overwriting a human's copy, where the ghost review stars come from. This repo packages that judgment as [Agent Skills](https://agentskills.io): focused, model-readable playbooks your agent loads on demand when you point it at a real store. It's a companion to the official plugin, not a replacement: that one gives your agent the API, this gives it the playbook.
 
 ```
 /plugin marketplace add kgelster/awesome-ecom-skills
@@ -25,7 +25,7 @@
 
 ## The catalog cleanup suite
 
-The core of the repo: six skills for getting a messy catalog into shape, from finding the problems to fixing the data. They cross-reference each other — audit finds, the rest fix.
+The core of the repo: six skills for getting a messy catalog into shape, from finding the problems to fixing the data. They cross-reference each other: audit finds, the rest fix.
 
 <table>
   <tr>
@@ -89,12 +89,12 @@ The core of the repo: six skills for getting a messy catalog into shape, from fi
 
 ## ⚠️ Read before you install
 
-**These skills direct an agent to mutate a live Shopify store** — archive
+**These skills direct an agent to mutate a live Shopify store**: archive
 products, delete metafields, rewrite descriptions, create redirects. That is
 exactly as powerful as it sounds.
 
 - **Review the skills before installing.** They're plain Markdown; read what
-  they'll do. Nothing here phones home or auto-runs — they're reference guides —
+  they'll do. Nothing here phones home or auto-runs (they're reference guides),
   but you're handing an agent a playbook for your storefront's data.
 - **The recipes are preview-first and safe-mode by doctrine.** Every mutation is
   preceded by a read-only count query, safe mode fills missing / MERGEs / hides
@@ -127,7 +127,7 @@ git clone https://github.com/kgelster/awesome-ecom-skills
 cp -r awesome-ecom-skills/skills/* ~/.claude/skills/
 ```
 
-Each skill directory is self-contained — copy just the ones you want.
+Each skill directory is self-contained; copy just the ones you want.
 
 ### Other harnesses
 
@@ -143,14 +143,14 @@ repo.
 ```
 skills/shopify-<area>/
   SKILL.md            # the playbook (frontmatter + body, ~100-200 lines)
-  references/*.md     # heavy detail — query recipes, prompts, gotchas — loaded on demand
+  references/*.md     # heavy detail: query recipes, prompts, gotchas, loaded on demand
 ```
 
 There is **no `scripts/` directory** anywhere. This collection ships recipes,
 not programs: the GraphQL and curl blocks are copy-and-adapt starting points
 your agent runs against the current schema and discards. That keeps the skills
 honest across Shopify's quarterly API changes instead of shipping a binary that
-silently rots. Skills are original prose — the operational lessons agency work
+silently rots. Skills are original prose: the operational lessons agency work
 teaches, not a copy of [shopify.dev](https://shopify.dev). The official docs
 remain canonical for the API itself.
 
@@ -165,14 +165,14 @@ reader how to verify the change via the Admin API. PRs welcome.
 
 Distilled against **Shopify Admin API 2025-07** in July 2026. Shopify deprecates
 API versions on a rolling quarterly schedule and Google changes rich-result
-eligibility often — verify version-specific claims against
+eligibility often, so verify version-specific claims against
 [shopify.dev](https://shopify.dev/docs/api/admin-graphql) and each skill's
 **Provenance and maintenance** section before trusting them. When in doubt, the
 Admin API readback is the source of truth, not the storefront (it's CDN-cached).
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE).
 
 > Not affiliated with Shopify. "Shopify" and "Matrixify" are used descriptively;
 > this is an independent, community-built collection. Client work referenced in
