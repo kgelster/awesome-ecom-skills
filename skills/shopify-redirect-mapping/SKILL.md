@@ -11,8 +11,9 @@ description: >-
   creating a single one-off redirect (do it in admin).
 compatibility: >-
   Requires Shopify Admin API (custom-app token or Shopify CLI 3.x), GraphQL
-  written against Admin API 2025-07, scopes read_products/read_url_redirects/
-  write_url_redirects. Or apply in bulk via the Matrixify Redirects sheet.
+  written against Admin API 2025-07, scopes read_products/read_content/
+  read_online_store_navigation/write_online_store_navigation. Or apply in bulk
+  via the Matrixify Redirects sheet.
 ---
 
 # Shopify Redirect Mapping
@@ -105,7 +106,8 @@ lane; never write a token to a committed file.
 
 **Lane A, custom-app token.** In Shopify admin: Settings → Apps and sales
 channels → Develop apps → create an app → grant this skill's minimum scopes
-(`read_products`, `read_url_redirects`, `write_url_redirects`), install, and copy
+(`read_products`, `read_content`, `read_online_store_navigation`,
+`write_online_store_navigation`), install, and copy
 the Admin API access token. Keep it in the env:
 
 ```bash
@@ -114,7 +116,7 @@ export SHOPIFY_ACCESS_TOKEN="<your Admin API access token>"   # env, not disk
 ```
 
 **Lane B, Shopify CLI OAuth (no stored token).** `shopify store auth --store
-$SHOPIFY_STORE --scopes read_products,read_url_redirects,write_url_redirects`
+$SHOPIFY_STORE --scopes read_products,read_content,read_online_store_navigation,write_online_store_navigation`
 then `shopify store execute` to run a validated operation.
 
 ## Preview before you mutate; stay non-destructive

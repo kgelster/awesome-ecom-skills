@@ -75,11 +75,14 @@ store.
    reverse a change you must import a new file that explicitly sets the old
    values back.
 6. **Sub-command MERGE ≠ entity MERGE.** Setting the entity `Command` to MERGE
-   does not protect tags, images, or variants. Those have their own command
-   columns (`Tags Command`, `Image Command`, `Variant Command`) that default to
-   MERGE only when the column is present. If you include a `Tags` column with an
-   empty `Tags Command`, behavior can surprise you, so always pair `Tags` with an
-   explicit `Tags Command`.
+   does not by itself govern tags, images, or variants. Those have their own
+   command columns (`Tags Command`, `Image Command`, `Variant Command`), each of
+   which defaults to MERGE when absent (per the
+   [matrixify.app docs](https://matrixify.app/documentation/list-of-commands-across-matrixify-sheets/)).
+   MERGE is the safe default, but state it anyway: always pair a `Tags` column
+   with an explicit `Tags Command` so the intent (add vs. REPLACE the exact list
+   vs. DELETE listed) is unambiguous on the sheet rather than relying on the
+   default.
 
 ## Row identification and adjacency
 

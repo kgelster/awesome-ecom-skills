@@ -107,10 +107,12 @@ unarchive path is the same query on your tag, flipping status back. Recipes:
 
 ### 2. Orphaned metafield debris (the ghost-star class)
 
-Classic symptom: a store uninstalled a product-review app, but the theme still
-renders **empty star ratings** on every product. The app left its metafields
-behind (a review namespace plus rating/rating-count fields), and the theme's
-star snippet reads them, finds `0`, and paints five empty stars.
+Classic symptom: a store uninstalled a product-review app (Shopify's own Product
+Reviews is the usual culprit), but the theme still renders **empty star ratings**
+on every product. The app left its metafields behind: the `spr.reviews` field the
+Product Reviews app wrote, plus a `reviews` namespace holding `reviews.rating` and
+`reviews.rating_count`. The theme's star snippet reads them, finds `0`, and paints
+five empty stars.
 
 Fix safely:
 
@@ -118,11 +120,13 @@ Fix safely:
    belong to an app that is uninstalled, not merely paused. Deleting metafields
    an installed app owns will just have the app rewrite them.
 2. **Inventory the orphaned namespaces.** Query the product metafield
-   definitions and a sample of products for the suspect namespace(s) so you know
-   exactly which `namespace.key` pairs you are removing and how many products
-   carry them.
-3. **Delete via `metafieldsDelete`** in batches, keyed by owner GID +
-   namespace + key. Preview the affected-count first, same as archiving.
+   definitions and a sample of products for every suspect namespace (`spr` and
+   `reviews` for the Product Reviews app) so you know exactly which
+   `namespace.key` pairs you are removing and how many products carry them.
+3. **Delete via `metafieldsDelete`**, keyed by owner GID + namespace + key,
+   covering both `spr.reviews` and the `reviews.rating` / `reviews.rating_count`
+   fields. Preview the affected-count first, same as archiving; batch the
+   identifiers to stay under rate/cost limits.
 4. **Re-read** a few products to confirm the fields are gone, then reload the
    storefront product: the empty stars should be gone (the theme snippet may
    also need its now-dead reference removed; flag that to whoever owns the theme).

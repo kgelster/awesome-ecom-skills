@@ -109,7 +109,7 @@ Same fill-only-the-blank rule as products.
 
 ```graphql
 query($cursor: String) {
-  pages(first: 100, after: $cursor) {
+  pages(first: 100, after: $cursor, query: "published_status:published") {
     pageInfo { hasNextPage endCursor }
     nodes {
       id
@@ -121,6 +121,10 @@ query($cursor: String) {
   }
 }
 ```
+
+Like the articles query, `published_status:published` scopes the backfill to
+**published pages only** so it never writes onto unpublished drafts. Drop it only
+if you deliberately want drafts included.
 
 **Count:** increment when `seoTitle.value` or `seoDesc.value` is null/empty.
 Source text = `bodySummary` (fall back to `title`).
@@ -159,7 +163,7 @@ human-written value. Send the blank one(s) only.
 
 ```graphql
 query($cursor: String) {
-  articles(first: 100, after: $cursor) {
+  articles(first: 100, after: $cursor, query: "published_status:published") {
     pageInfo { hasNextPage endCursor }
     nodes {
       id
@@ -172,6 +176,11 @@ query($cursor: String) {
   }
 }
 ```
+
+The `query: "published_status:published"` filter is deliberate: the backfill
+targets **published articles only**, so a bulk run never writes SEO meta onto
+unpublished drafts (which have no live URL to rank). Drop the filter only if you
+explicitly intend to backfill drafts too.
 
 **Count:** increment when `seoTitle.value` or `seoDesc.value` is null/empty.
 Source text = `summary` (fall back to `title`); pass `blog.title` into the

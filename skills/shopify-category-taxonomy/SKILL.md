@@ -79,17 +79,23 @@ product feeds. Resolve the ID by `search:` against `taxonomy { categories }`
 Provenance.
 
 Classification **signal priority** (highest to lowest confidence):
-**title** (strongest lexical signal) > **product type** (good when populated,
-many stores don't) > **vendor** (a mono-line vendor pins it, a multi-line one
-doesn't) > **tags** (noisy, but often encode type on catalogs that tag by
-category) > **description** (last resort; easy to mis-key on flavor words).
+**tags** (highest on stores that tag by category: a "Mango" tea tagged
+`black-tea` is a flavored black, not a fruit infusion, and the tag says so
+where the title misleads) > **product type** (good when the store populates it,
+many don't) > **title / vendor** (lexical fallback; a mono-line vendor pins the
+category, a multi-line one doesn't) > **description** (last resort; verbose and
+easy to mis-key on flavor words).
 
-Emit a confidence flag per product. Ship the high-confidence rows; route the
-ambiguous ones (bundles, samplers, cross-category items) to a human review sheet
-rather than guessing.
+Emit a confidence flag per product and split the catalog into high-confidence
+vs ambiguous (bundles, samplers, cross-category items). Ship the high-confidence
+rows; route the ambiguous ones to a human review sheet rather than guessing. See
+the SOP's pull-then-classify steps below.
 
 ```graphql
-# preview: how many products land in this category assignment
+# preview (read-only): how many products your classifier targets, before any write
+query { productsCount(query: "tag:black-tea status:active") { count } }
+
+# then, per high-confidence product, assign the category
 mutation Assign($id: ID!, $cat: ID!) {
   productUpdate(product: {id: $id, category: $cat}) {
     product { id category { id fullName } }
@@ -163,11 +169,39 @@ query {
 ```
 
 Record per attribute: the **metafield key** (the attribute handle,
-lowercased-hyphenated, confirm it by reading an already-set product in step 4;
+lowercased-hyphenated, confirm it by reading an already-set product in step 6;
 the Color attribute's key is `color-pattern`, not `color`) and the **value name →
 TaxonomyValue GID** map.
 
-**2. Mint each missing value metaobject (once per store).** Reuse an existing
+**2. Pull the catalog, scoped to the target category.** Do not classify blind:
+page every candidate product first, capturing the signals the classifier reads.
+
+```graphql
+query($cursor: String) {
+  products(first: 100, after: $cursor, query: "status:active") {
+    pageInfo { hasNextPage endCursor }
+    nodes {
+      id handle title vendor productType tags
+      category { id fullName }
+      options { name optionValues { name } }
+      metafields(namespace: "shopify", first: 25) { nodes { key jsonValue } }
+    }
+  }
+}
+```
+
+For a large catalog, run this as a `bulkOperationRunQuery` dump instead of live
+pagination; the dump doubles as your pre-write backup.
+
+**3. Classify into high-confidence vs ambiguous.** Apply the signal priority
+(tags first). Emit a confidence flag per product; the high-confidence rows ship,
+the ambiguous ones (bundles, samplers, cross-category, low-signal titles) route
+to a review spreadsheet a human corrects before you write anything. This split
+is what let one tea retailer ship **583 of 717** products high-confidence and
+hold the remaining 134 for review instead of guessing. Assign the category
+(Part 1) on the high-confidence rows now; then continue to mint/set below.
+
+**4. Mint each missing value metaobject (once per store).** Reuse an existing
 metaobject when its `label` already matches; only mint when genuinely absent.
 
 ```graphql
@@ -184,7 +218,7 @@ mutation M($m: MetaobjectCreateInput!) {
 
 Build a `value name → Metaobject GID` map from the results plus existing entries.
 
-**3. Apply via `metafieldsSet`, batches of ≤25 metafields per call.**
+**5. Apply via `metafieldsSet`, batches of ≤25 metafields per call.**
 
 ```graphql
 mutation S($m: [MetafieldsSetInput!]!) {
@@ -199,7 +233,7 @@ mutation S($m: [MetafieldsSetInput!]!) {
 
 Emit only non-blank values. Abort on first-batch errors.
 
-**4. Verify by reading back resolved labels**, not by trusting the write's
+**6. Verify by reading back resolved labels**, not by trusting the write's
 `userErrors: []`.
 
 ```graphql

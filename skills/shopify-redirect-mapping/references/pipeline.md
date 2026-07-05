@@ -40,7 +40,8 @@ Then classify by prefix and route:
 Fetch every candidate target the store currently serves: active product handles,
 collection handles, page handles, blog article handles. Paginate 250 per page and
 cache the result to JSON (a 24-hour TTL is plenty for a multi-pass job). Minimum
-scopes: `read_products` for products; `read_url_redirects`/`write_url_redirects`
+scopes: `read_products` for products and collections, `read_content` for pages
+and blog articles, and `read_online_store_navigation`/`write_online_store_navigation`
 for the redirect read/write in steps 6–7.
 
 ```graphql
@@ -114,7 +115,7 @@ query runs first. Log per-row results so a partial failure is visible.
 `shopify-matrixify` skill. The Redirects entity is two columns:
 
 ```csv
-"Redirect from","Redirect to"
+"Path","Target"
 "/old-url","/new-url"
 ```
 

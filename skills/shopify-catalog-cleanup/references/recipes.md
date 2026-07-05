@@ -68,13 +68,16 @@ Deletion has no equivalent: that is why archive is the default.
 
 ### 2a. Confirm the app is gone, then inventory the namespace
 
-The ghost-star class: an uninstalled review app leaves a review namespace plus
-rating / rating-count fields the theme still renders as empty stars. First
-verify in admin that the owning app is uninstalled (not paused). Then inventory:
+The ghost-star class: an uninstalled review app (Shopify's Product Reviews is the
+usual one) leaves `spr.reviews` plus a `reviews` namespace holding `rating` and
+`rating_count`, and the theme still renders them as empty stars. First verify in
+admin that the owning app is uninstalled (not paused). Then inventory both
+namespaces (`metafieldDefinitions` takes one namespace at a time, so run it per
+namespace, or drop the filter to list all and grep locally):
 
 ```graphql
 query MetafieldInventory {
-  # definitions still on file for the suspect namespace
+  # definitions still on file for a suspect namespace (repeat with "spr")
   metafieldDefinitions(first: 50, ownerType: PRODUCT, namespace: "reviews") {
     nodes { namespace key name type { name } }
   }
@@ -88,14 +91,17 @@ query MetafieldInventory {
 }
 ```
 
-Note the exact `namespace.key` pairs you intend to remove (e.g. a rating and a
-rating-count under a reviews namespace). To count reach precisely, page through
-products and tally which carry those keys; do not assume every product has them.
+Note the exact `namespace.key` pairs you intend to remove: for Product Reviews
+that is `spr.reviews`, `reviews.rating`, and `reviews.rating_count`. To count
+reach precisely, page through products and tally which carry those keys; do not
+assume every product has them.
 
 ### 2b. Delete the orphaned metafields in batches
 
-`metafieldsDelete` takes up to 25 identifiers (owner GID + namespace + key) per
-call. Preview the affected count first (2a). Build identifiers, batch, delete.
+`metafieldsDelete` takes a list of identifiers (owner GID + namespace + key).
+Preview the affected count first (2a). Build the identifiers and batch them into
+reasonably sized calls to stay under rate/cost limits, not because the mutation
+caps the list.
 
 ```graphql
 mutation PurgeOrphans($ids: [MetafieldIdentifierInput!]!) {
@@ -109,6 +115,7 @@ mutation PurgeOrphans($ids: [MetafieldIdentifierInput!]!) {
 ```json
 {
   "ids": [
+    { "ownerId": "gid://shopify/Product/123", "namespace": "spr", "key": "reviews" },
     { "ownerId": "gid://shopify/Product/123", "namespace": "reviews", "key": "rating" },
     { "ownerId": "gid://shopify/Product/123", "namespace": "reviews", "key": "rating_count" }
   ]

@@ -42,6 +42,13 @@ query CatalogIndex($first: Int!, $after: String) {
 Variables: `{ "first": 100, "after": null }`, then feed `endCursor` back as
 `after` until `hasNextPage` is false.
 
+`variants(first: 100)` **silently truncates** products with more than 100
+variants (and raises the per-page cost). A product whose 101st variant is the $0
+one gets a clean bill it doesn't deserve. For catalogs with high-variant products
+(large size/color matrices), either pull only the variant fields you actually
+audit or paginate the `variants` sub-connection per product; don't assume
+`first: 100` captured them all.
+
 ### What each field feeds
 
 - `mediaCount.count` → missing-photo (0) and thin-media (1) flags. Cheaper than
@@ -83,12 +90,17 @@ returns its cost in `extensions.cost`:
   "requestedQueryCost": 92,
   "actualQueryCost": 41,
   "throttleStatus": {
-    "maximumAvailable": 2000.0,
-    "currentlyAvailable": 1959.0,
+    "maximumAvailable": 1000.0,
+    "currentlyAvailable": 959.0,
     "restoreRate": 100.0
   }
 }}
 ```
+
+Above is a **standard** store: bucket 1,000 points, refilling 100/sec. A Shopify
+Plus store reports a **10,000** bucket refilling **1,000/sec** in the same
+fields (~10× the headroom, not 2×). Always read the actual numbers from
+`throttleStatus` rather than assuming a tier.
 
 - Connection cost scales with `first` **and** nested connections. A page of 100
   products each with a 100-variant sub-connection costs far more than 100 bare
@@ -105,11 +117,13 @@ returns its cost in `extensions.cost`:
 
 ## Plus-store concurrency
 
-Shopify Plus stores get a **higher cost bucket** (roughly 2× the standard
-`maximumAvailable`), which allows modest concurrent pagination: several
-in-flight page requests instead of strictly serial. Read the actual
-`maximumAvailable` from `throttleStatus` rather than assuming a number; it varies
-by plan. Guard concurrency with a shared point-budget check (decrement the
+Shopify Plus stores get a **much larger cost bucket**: a 10,000-point bucket
+refilling at 1,000 points/sec, versus 1,000 / 100/sec on a standard store
+(roughly 10× the headroom, not the 2× some older guides claim). That headroom is
+what makes real concurrent pagination worthwhile: several in-flight page requests
+instead of strictly serial. Read the actual `maximumAvailable` and `restoreRate`
+from `throttleStatus` rather than assuming the number; confirm the tier from the
+live response. Guard concurrency with a shared point-budget check (decrement the
 in-memory available-points count before each request, restore on the response's
 reported `currentlyAvailable`) so parallel requests don't collectively overrun
 the bucket. On a non-Plus store, stay serial: the standard bucket throttles

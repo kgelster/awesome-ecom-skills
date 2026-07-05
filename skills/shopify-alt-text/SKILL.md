@@ -6,12 +6,13 @@ description: >-
   library images, image SEO, or a WCAG/accessibility pass that flags images
   missing text alternatives. Triggers: "backfill alt text", "fill in missing alt
   text", "images have no alt", "add alt attributes for accessibility", "image
-  SEO sweep". Two surfaces, two mutations: product media vs Files-library images.
-  Not for meta titles/descriptions (use shopify-seo-metadata).
+  SEO sweep". One mutation, fileUpdate, covers both product media and the Files
+  library. Not for meta titles/descriptions (use shopify-seo-metadata).
 compatibility: >-
   Requires Shopify Admin API access (custom-app token or Shopify CLI 3.x).
-  GraphQL written against Admin API 2025-07. Scopes: `write_products` for product
-  media; `read_files`/`write_files` for the Files library.
+  GraphQL written against Admin API 2025-07. Scopes: `read_products` to enumerate
+  product-image owners, `read_files` to page the Files library, `write_files`
+  because `fileUpdate` writes alt for both.
 ---
 
 # Shopify Alt Text
@@ -26,21 +27,25 @@ same safe-mode doctrine, different fields. The FIND stage (measuring how many
 images lack alt across the catalog before you commit to a sweep) belongs to
 **shopify-catalog-audit**.
 
-## Two surfaces, two mutations
+## One mutation, two find paths
 
-Alt text lives in two distinct places on a Shopify store, and each takes a
-different mutation. Getting this wrong is the most common failure:
+Images live in two places on a Shopify store, but both write through the **same
+mutation**. A product image and a Files-library image are both `MediaImage`
+nodes, which are `File` subtypes, so a single `fileUpdate` sets `alt` on either.
+There is no separate product-media alt mutation to learn.
 
-- **Product media:** images attached to a product. Update with
-  `productUpdateMedia`, setting the `alt` field on each `MediaImage`. Scope:
-  `write_products`.
-- **Files library images:** images in Content → Files (used in theme sections,
-  metaobjects, rich-text, collection banners). Update with `fileUpdate`, setting
-  `alt`. Scope: `write_files`.
+- **`fileUpdate` is the one write.** It takes the image's `MediaImage` GID and
+  the new `alt`. This is the write path both source tools converge on. (Shopify's
+  old `productUpdateMedia` is **deprecated on shopify.dev; do not use it** for
+  alt text.)
+- **Two ways to FIND the images, one way to fix them:**
+  - *Product media:* page products, read each `MediaImage` under `product.media`.
+    Needs `read_products`.
+  - *Files library:* page the `files` connection (Content → Files: theme
+    sections, metaobjects, rich-text, collection banners). Needs `read_files`.
+  - Both hand you `MediaImage` GIDs; feed those straight into `fileUpdate`.
 
-A product image and a Files-library image can even point at the same underlying
-asset while carrying independent alt text. Decide which surface you are sweeping
-before you write anything. Full count/fetch/update recipes for both are in
+Full count/fetch/update/verify recipes for both find paths are in
 [references/queries.md](references/queries.md).
 
 ## Store access
@@ -58,8 +63,9 @@ export SHOPIFY_STORE="your-store.myshopify.com"
 export SHOPIFY_ACCESS_TOKEN="<your Admin API access token>"   # keep it in the env, not on disk
 ```
 
-Call the GraphQL endpoint (minimum scopes for this skill: `write_products` for
-product media, plus `read_files`/`write_files` if you sweep the Files library):
+Call the GraphQL endpoint (minimum scopes for this skill: `read_products` to
+enumerate product-image owners, `read_files` to page the Files library, and
+`write_files` because `fileUpdate` writes alt for both):
 
 ```bash
 curl -s "https://$SHOPIFY_STORE/admin/api/2025-07/graphql.json" \
@@ -69,9 +75,9 @@ curl -s "https://$SHOPIFY_STORE/admin/api/2025-07/graphql.json" \
 ```
 
 **Lane B, Shopify CLI OAuth (no stored token).** `shopify store auth --store
-$SHOPIFY_STORE --scopes write_products,write_files` then `shopify store execute`
-to run a validated operation. Good for token-less stores where the owner logs in
-interactively.
+$SHOPIFY_STORE --scopes read_products,read_files,write_files` then `shopify store
+execute` to run a validated operation. Good for token-less stores where the owner
+logs in interactively.
 
 For the full Admin GraphQL schema, use Shopify's official AI toolkit plugin.
 That plugin gives your agent the API; this skill gives it the playbook.
@@ -94,17 +100,25 @@ store; the difference between a clean sweep and a support ticket is discipline.
    existing alt is a separate, deliberate decision a human makes per-image, never
    the default of a sweep.
 2. **Preview a read-only count first.** Before any mutation, run the count query
-   for the surface you are about to touch and read the number back. Sanity-check
-   it: a store with 300 products and "1,900 product images missing alt" is
-   plausible; "40,000 missing" on the same store means your filter is wrong (you
-   are probably counting Files or already-captioned images). A count far above
-   expectation means stop and re-scope, not proceed.
-3. **Verify against the Admin API, not the storefront.** After writing, re-query
-   the same images through `admin/api/.../graphql.json` and confirm `altText` /
-   `alt` is now populated. The storefront is CDN-cached and will show stale
-   (empty) alt for minutes; it is not evidence the write landed. The reference
-   has the readback query.
-4. **Never print or commit the Admin API access token.** Read it from the env.
+   for the find path you are about to touch and read the number back.
+   Sanity-check it: a store with 300 products and "1,900 product images missing
+   alt" is plausible; "40,000 missing" on the same store means your filter is
+   wrong (probably counting non-image files or already-captioned images). A count
+   far above expectation means stop and re-scope, not proceed.
+3. **Preflight the generation API key with a real 1-token completion.** If you
+   caption images with an LLM, before the bulk run send one real (cheap,
+   1-token) completion and confirm a 200. Do **not** trust a `models.list` /
+   auth-only check: a key that lists models can still fail on the actual
+   completion (billing, per-model access, org limits), and you find out 400
+   images into the sweep instead of before it.
+4. **Log every write, then verify against the Admin API.** Keep a per-write log
+   (image GID, find path, old alt, new alt, status) so a bad batch is auditable
+   and reversible. After writing, re-query the same images through
+   `admin/api/.../graphql.json` and confirm `alt` is populated. The storefront is
+   CDN-cached and shows stale (empty) alt for minutes; it is not evidence the
+   write landed. The reference has the readback query.
+5. **Never print or commit the Admin API access token or the generation key.**
+   Read both from the env.
 
 ## What good alt text is
 
@@ -116,7 +130,7 @@ stuff keywords or repeat the product's sales pitch.
   now."
 - **Keep it under ~125 characters.** Screen readers read the whole string;
   long alt is punishing to listen to. Most screen-reader guidance treats ~125
-  chars as the practical ceiling.
+  chars as the practical ceiling. Cap generated captions at 125 before writing.
 - **No keyword stuffing.** Repeating the product title plus a list of search
   terms hurts the accessibility use it exists for and reads as spam to search
   engines. One natural description.
@@ -129,35 +143,34 @@ stuff keywords or repeat the product's sales pitch.
   it is an image; the prefix is redundant noise. Strip it if a generator adds it.
 
 If you generate captions from the image (vision model), still gate every write
-through the safe-mode rule above and cap the output at 125 characters before
-writing. Canonical guidance: the W3C WAI
+through the safe-mode rules above. Canonical guidance: the W3C WAI
 [alt-text decision tree](https://www.w3.org/WAI/tutorials/images/decision-tree/).
 
 ## References
 
 - [references/queries.md](references/queries.md): count / fetch / update /
-  verify recipes for both surfaces (product media via `productUpdateMedia`,
-  Files library via `fileUpdate`), with pagination and MIME filtering.
+  verify recipes for both find paths (product media and the Files library), all
+  writing through `fileUpdate`, with pagination and MIME filtering.
 
 ## Provenance and maintenance
 
 Last verified: 2026-07-05. GraphQL pinned to Admin API 2025-07; Shopify
-deprecates versions on a rolling quarterly schedule, so confirm
-`productUpdateMedia` and `fileUpdate` against
-[shopify.dev](https://shopify.dev/docs/api/admin-graphql) before trusting a
-version-specific claim. Read-only re-verification a stranger can run, listing
-product media and seeing which lack alt while mutating nothing:
+deprecates versions on a rolling quarterly schedule, so confirm `fileUpdate`
+against [shopify.dev](https://shopify.dev/docs/api/admin-graphql) before trusting
+a version-specific claim. `productUpdateMedia` is deprecated; `fileUpdate` is the
+current alt-text write for both product media and Files. Read-only
+re-verification a stranger can run, listing product media and seeing which lack
+alt while mutating nothing:
 
 ```bash
 curl -s "https://$SHOPIFY_STORE/admin/api/2025-07/graphql.json" \
   -H "X-Shopify-Access-Token: $SHOPIFY_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"query":"{ products(first: 5) { edges { node { title media(first: 10) { edges { node { ... on MediaImage { id altText } } } } } } } }"}'
+  -d '{"query":"{ products(first: 5) { edges { node { title media(first: 10) { edges { node { ... on MediaImage { id alt } } } } } } } }"}'
 ```
 
 Canonical docs:
-[productUpdateMedia](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productUpdateMedia),
-[fileUpdate](https://shopify.dev/docs/api/admin-graphql/latest/mutations/fileUpdate),
+[fileUpdate](https://shopify.dev/docs/api/admin-graphql/latest/mutations/fileUpdate)
 and the [WAI images tutorial](https://www.w3.org/WAI/tutorials/images/). These
 skills capture operational lessons the docs don't; they are not a replacement for
 the reference.

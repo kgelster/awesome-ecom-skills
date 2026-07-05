@@ -37,10 +37,12 @@ export SHOPIFY_STORE="your-store.myshopify.com"
 export SHOPIFY_ACCESS_TOKEN="<your Admin API access token>"   # env only, not on disk
 ```
 
-Minimum scopes: `read_products`, `read_metafields`, `write_metafields` (add
-`read_content` if you touch pages/blog articles). Rendering the snippet needs
-**theme edit access** (theme editor or the theme's Git repo), which is separate
-from the API. Sanity-check the token:
+Minimum scopes: `read_products`, `write_products`, `read_content`,
+`write_content`. There is no standalone metafield scope; metafield access is
+governed by the owning resource's scope (products → `write_products`,
+pages/articles → `write_content`). Rendering the snippet needs **theme edit
+access** (theme editor or the theme's Git repo), which is separate from the API.
+Sanity-check the token:
 
 ```bash
 curl -s "https://$SHOPIFY_STORE/admin/api/2025-07/graphql.json" \
@@ -50,7 +52,7 @@ curl -s "https://$SHOPIFY_STORE/admin/api/2025-07/graphql.json" \
 ```
 
 **Lane B: Shopify CLI OAuth (no stored token).** `shopify store auth --store
-$SHOPIFY_STORE --scopes read_products,read_metafields,write_metafields` then
+$SHOPIFY_STORE --scopes read_products,write_products,read_content,write_content` then
 `shopify store execute`. Good for token-less stores where the owner logs in.
 
 For the full Admin GraphQL schema, use Shopify's official AI toolkit plugin:
