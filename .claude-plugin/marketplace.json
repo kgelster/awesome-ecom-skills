@@ -1,0 +1,24 @@
+{
+  "name": "kgelster",
+  "description": "Agent skills and playbooks for running a Shopify store with a coding agent.",
+  "owner": {
+    "name": "Kurt Elster"
+  },
+  "plugins": [
+    {
+      "name": "ecom",
+      "source": "./",
+      "description": "Shopify agency playbooks as agent skills: catalog cleanup, SEO metadata, structured data, redirects, and landing pages.",
+      "category": "ecommerce",
+      "tags": [
+        "shopify",
+        "ecommerce",
+        "seo",
+        "structured-data",
+        "matrixify",
+        "catalog",
+        "agent-skills"
+      ]
+    }
+  ]
+}
