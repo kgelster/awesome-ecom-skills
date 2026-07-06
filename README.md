@@ -102,8 +102,10 @@ exactly as powerful as it sounds.
   Admin API readback. But doctrine is not a seatbelt: **you own the store and
   the risk.** Run the preview, check the number, take a Matrixify backup export
   before a large write.
-- **Never paste tokens into files.** Every skill reads the Admin API access
-  token from an environment variable. Keep it there.
+- **Never paste tokens into files.** If you use the Shopify CLI or the official
+  AI toolkit, auth is interactive and there's no token to store. If you script
+  against the Admin API directly, the token lives in an environment variable,
+  never on disk.
 
 ---
 
