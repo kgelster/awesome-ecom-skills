@@ -1,10 +1,6 @@
 <!-- ship the cart, not the code -->
 
 <p align="center">
-  <img src="./media/hero.png" alt="awesome-ecom-skills: Shopify agency playbooks as agent skills" width="840">
-</p>
-
-<p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-16a34a" alt="MIT license"></a>
   <a href="https://github.com/kgelster/awesome-ecom-skills/releases"><img src="https://img.shields.io/github/v/release/kgelster/awesome-ecom-skills?color=7c3aed" alt="Latest release"></a>
   <img src="https://img.shields.io/badge/skills-9-2563eb" alt="9 skills">
