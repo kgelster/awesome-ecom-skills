@@ -138,15 +138,15 @@ The GraphQL and matching logic in [references/pipeline.md](references/pipeline.m
 are copy-and-adapt starting points. Your agent writes throwaway code per
 engagement against the current schema, runs it, and discards it: that keeps the
 pass honest across Shopify's quarterly schema changes rather than shipping a
-binary that silently rots. The seven-step runbook, the matching-algorithm spec,
-the `urlRedirectCreate` and Matrixify apply paths, and the WordPress URL
-transforms all live there.
+binary that silently rots. The eight-step runbook, the matching-algorithm spec,
+the `urlRedirectCreate` and Matrixify apply paths, the redirect-to-404 rot sweep
+(`urlRedirectUpdate`), and the WordPress URL transforms all live there.
 
 ## References
 
-- [references/pipeline.md](references/pipeline.md): the 7-step runbook, from GSC
-  404 export → inventory pull → matching-algorithm spec → apply → `curl -I` verify,
-  plus WordPress pattern transforms.
+- [references/pipeline.md](references/pipeline.md): the 8-step runbook, from GSC
+  404 export → inventory pull → matching-algorithm spec → apply → redirect-to-404
+  rot sweep → `curl -I` verify, plus WordPress pattern transforms.
 
 ## Provenance and maintenance
 

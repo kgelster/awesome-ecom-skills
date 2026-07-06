@@ -1,4 +1,4 @@
-# Redirect Mapping Pipeline: 7-Step Runbook
+# Redirect Mapping Pipeline: 8-Step Runbook
 
 Recipes, not a program. Each block is a starting point your agent adapts to the
 store and the current schema, runs once, and discards. Read the parent
@@ -124,20 +124,64 @@ step before importing, and download the Import Results file after to confirm row
 counts. (Column headers vary slightly by Matrixify version, so verify against the
 current Redirects sheet template.)
 
-## Step 7: Verify (mandatory before claiming done)
+## Step 7: Sweep the existing redirects for redirect-to-404 rot
+
+A live 301 silently rots into a redirect-to-404 when its **target** is later
+removed: a collection retired, a product unpublished, a seasonal campaign torn
+down. It is as harmful to SEO as a raw 404, and no GSC 404 export will ever
+surface it, because Search Console still sees the source as "redirected" rather
+than broken. The only way to catch it is to check the targets, not the sources.
+Run this on every pass over a store that has been mapped before.
+
+- Take the full redirect set you already pulled in Step 6 (`urlRedirects`,
+  paginated) plus the live inventory from Step 3.
+- For each redirect, isolate the **internal** target path (`/collections/…`,
+  `/products/…`, `/pages/…`, `/blogs/…`); skip `/` and off-site absolute URLs.
+  Reduce it to its handle and check that handle against the matching Step 3
+  inventory list. A target whose handle is absent from live inventory is rotted.
+  Dedupe targets first: hundreds of redirects usually share a few dozen targets,
+  so you check each target once, not each redirect. Cross-referencing the
+  inventory you already hold keeps this an Admin-API truth check per the SKILL
+  doctrine; a `curl -I` against the storefront is a fine extra spot-check but not
+  the system of record.
+- Re-point each rotted redirect to the closest surviving landing, using the same
+  per-type thresholds and cross-type fallback as a fresh match (a category beats
+  the homepage). This is an **update, not a create**: the source path already
+  exists, so `urlRedirectCreate` would error and a create-only importer would skip
+  it. Use `urlRedirectUpdate` with the redirect's id:
+
+  ```graphql
+  mutation($id: ID!, $target: String!) {
+    urlRedirectUpdate(id: $id, urlRedirect: { target: $target }) {
+      urlRedirect { id path target }
+      userErrors { field message }
+    }
+  }
+  ```
+
+- Log the re-points and their rationale beside the pass's new redirects, and roll
+  the count into the Step 8 record. Watch for chained rot: if a rotted target's
+  best surviving landing is *itself* a redirect, point at the final destination,
+  not the intermediate hop.
+
+## Step 8: Verify (mandatory before claiming done)
 
 - **Count.** Re-query `urlRedirects` (or read the Matrixify Import Results row
   counts) and compare created-vs-expected. A gap means duplicates were skipped or
   a create failed: reconcile it, don't wave it off.
-- **Spot-check 5–10 source paths** against the live storefront:
+- **Spot-check 5–10 source paths** against the live storefront, and follow each
+  redirect one hop further to confirm its **target** returns 200, not another 404.
+  Verifying the source 301s is not enough: a 301 to a dead target is the exact
+  failure Step 7 exists to prevent.
 
   ```bash
   curl -sI "https://$SHOPIFY_STORE/old-path" | grep -iE "^(HTTP|location)"
   # expect: HTTP/... 301  and  location: https://.../new-path
+  # then curl the location itself and confirm HTTP/... 200
   ```
 
-- **Record the pass**: URLs in, redirects created, rows left in review. The review
-  count is the backlog for the next pass.
+- **Record the pass**: URLs in, redirects created, rotted targets re-pointed, rows
+  left in review. The review count is the backlog for the next pass.
 
 ## WordPress → Shopify URL transforms
 
