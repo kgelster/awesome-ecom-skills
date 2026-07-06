@@ -16,7 +16,9 @@
   <b>Shopify's plugin gives your agent the API. This gives it the playbook.</b>
 </p>
 
-> Shopify's [official AI toolkit](https://shopify.dev) hands your coding agent the Admin API: the schema, the mutations, the reference. What it doesn't hand over is *judgment*: which category ID not to guess, why a blank cell in a Matrixify import silently deletes a metafield, how to backfill SEO metadata without overwriting a human's copy, where the ghost review stars come from. This repo packages that judgment as [Agent Skills](https://agentskills.io): focused, model-readable playbooks your agent loads on demand when you point it at a real store. It's a companion to the official plugin, not a replacement: that one gives your agent the API, this gives it the playbook.
+> You run a real Shopify catalog: hundreds or thousands of products, years of drift, and an AI assistant that reaches for generic web-dev answers when the right move is Shopify-native. Shopify's [official AI toolkit](https://shopify.dev) hands your agent the Admin API: the schema, the mutations, the reference. What it doesn't hand over is *judgment*: which category ID not to guess, why a blank cell in a Matrixify import silently deletes a metafield, how to backfill SEO metadata without overwriting a human's copy, where the ghost review stars come from. This repo packages that judgment as [Agent Skills](https://agentskills.io): focused, model-readable playbooks your agent loads on demand and runs against a live store. Every one is distilled from real agency engagements, with the actual numbers and gotchas left in. Companion to the official toolkit, not a replacement: that gives your agent the API, this gives it the playbook.
+
+**Built for** Shopify merchants and the agencies who run their catalogs: taxonomy, SEO metadata, structured data, alt text, redirects, and bulk data at catalog scale. **Not** an app-dev or theme-dev kit, and no synthetic benchmark stat to sell you: just the operating knowledge that keeps an agent from quietly wrecking a live store.
 
 ```bash
 git clone https://github.com/kgelster/awesome-ecom-skills
