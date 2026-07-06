@@ -9,7 +9,7 @@
   <a href="https://github.com/kgelster/awesome-ecom-skills/releases"><img src="https://img.shields.io/github/v/release/kgelster/awesome-ecom-skills?color=7c3aed" alt="Latest release"></a>
   <img src="https://img.shields.io/badge/skills-9-2563eb" alt="9 skills">
   <img src="https://img.shields.io/badge/Admin%20API-2025--07-0891b2" alt="Shopify Admin API 2025-07">
-  <img src="https://img.shields.io/badge/Claude%20Code-plugin-d97706" alt="Claude Code plugin">
+  <img src="https://img.shields.io/badge/Claude%20Code-Agent%20Skills-d97706" alt="Claude Code Agent Skills">
 </p>
 
 <p align="center">
@@ -18,9 +18,9 @@
 
 > Shopify's [official AI toolkit](https://shopify.dev) hands your coding agent the Admin API: the schema, the mutations, the reference. What it doesn't hand over is *judgment*: which category ID not to guess, why a blank cell in a Matrixify import silently deletes a metafield, how to backfill SEO metadata without overwriting a human's copy, where the ghost review stars come from. This repo packages that judgment as [Agent Skills](https://agentskills.io): focused, model-readable playbooks your agent loads on demand when you point it at a real store. It's a companion to the official plugin, not a replacement: that one gives your agent the API, this gives it the playbook.
 
-```
-/plugin marketplace add kgelster/awesome-ecom-skills
-/plugin install ecom@kgelster
+```bash
+git clone https://github.com/kgelster/awesome-ecom-skills
+cp -r awesome-ecom-skills/skills/* ~/.claude/skills/
 ```
 
 ## The catalog cleanup suite
@@ -111,25 +111,17 @@ exactly as powerful as it sounds.
 
 ## Install
 
-### Claude Code plugin (recommended)
-
-```
-/plugin marketplace add kgelster/awesome-ecom-skills
-/plugin install ecom@kgelster
-```
-
-The nine skills activate automatically when your prompt matches (e.g. "my
-Matrixify import wiped a bunch of metafields", "backfill alt text on my product
-photos", "map the old URLs after my replatform").
-
-### Manual copy (any Claude Code, no marketplace)
+### Claude Code (or any Agent-Skills harness)
 
 ```bash
 git clone https://github.com/kgelster/awesome-ecom-skills
 cp -r awesome-ecom-skills/skills/* ~/.claude/skills/
 ```
 
-Each skill directory is self-contained; copy just the ones you want.
+Each skill directory is self-contained; copy just the ones you want. The skills
+activate automatically when your prompt matches (e.g. "my Matrixify import wiped
+a bunch of metafields", "backfill alt text on my product photos", "map the old
+URLs after my replatform").
 
 ### Other harnesses
 
