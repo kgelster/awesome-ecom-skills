@@ -1,18 +1,18 @@
 <!-- ship the cart, not the code -->
 
 <p align="center">
+  <b>Shopify's plugin gives your agent the API. This gives it the playbook.</b>
+</p>
+
+> Shopify's [official AI toolkit](https://shopify.dev) gives your agent the Admin API: schema, mutations, reference. It can't give *judgment*: which category ID not to guess, why a blank Matrixify cell silently deletes a metafield, how to backfill SEO metadata without clobbering a human's copy. These [Agent Skills](https://agentskills.io) are that judgment: model-readable playbooks your agent loads on demand and runs against a live store, each distilled from real agency work with the numbers left in.
+
+<p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-16a34a" alt="MIT license"></a>
   <a href="https://github.com/kgelster/awesome-ecom-skills/releases"><img src="https://img.shields.io/github/v/release/kgelster/awesome-ecom-skills?color=7c3aed" alt="Latest release"></a>
   <img src="https://img.shields.io/badge/skills-9-2563eb" alt="9 skills">
   <img src="https://img.shields.io/badge/Admin%20API-2025--07-0891b2" alt="Shopify Admin API 2025-07">
   <img src="https://img.shields.io/badge/Claude%20Code-Agent%20Skills-d97706" alt="Claude Code Agent Skills">
 </p>
-
-<p align="center">
-  <b>Shopify's plugin gives your agent the API. This gives it the playbook.</b>
-</p>
-
-> Shopify's [official AI toolkit](https://shopify.dev) gives your agent the Admin API: schema, mutations, reference. It can't give *judgment*: which category ID not to guess, why a blank Matrixify cell silently deletes a metafield, how to backfill SEO metadata without clobbering a human's copy. These [Agent Skills](https://agentskills.io) are that judgment: model-readable playbooks your agent loads on demand and runs against a live store, each distilled from real agency work with the numbers left in.
 
 **Built for** Shopify merchants and the agencies who run their catalogs: taxonomy, SEO metadata, structured data, alt text, redirects, and bulk data at catalog scale. **Not** an app-dev or theme-dev kit, and no synthetic benchmark stat to sell you: just the operating knowledge that keeps an agent from quietly wrecking a live store.
 
