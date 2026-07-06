@@ -11,14 +11,14 @@
   <a href="https://github.com/kgelster/awesome-ecom-skills/releases"><img src="https://img.shields.io/github/v/release/kgelster/awesome-ecom-skills?color=7c3aed" alt="Latest release"></a>
   <img src="https://img.shields.io/badge/skills-9-2563eb" alt="9 skills">
   <img src="https://img.shields.io/badge/Admin%20API-2025--07-0891b2" alt="Shopify Admin API 2025-07">
-  <img src="https://img.shields.io/badge/Claude%20Code-Agent%20Skills-d97706" alt="Claude Code Agent Skills">
+  <img src="https://img.shields.io/badge/Claude%20Code-plugin-d97706" alt="Claude Code plugin">
 </p>
 
 **Built for** Shopify merchants and the agencies who run their catalogs: taxonomy, SEO metadata, structured data, alt text, redirects, and bulk data at catalog scale. **Not** an app-dev or theme-dev kit, and no synthetic benchmark stat to sell you: just the operating knowledge that keeps an agent from quietly wrecking a live store.
 
 ```bash
-git clone https://github.com/kgelster/awesome-ecom-skills
-cp -r awesome-ecom-skills/skills/* ~/.claude/skills/
+/plugin marketplace add kgelster/awesome-ecom-skills
+/plugin install ecom@kgelster
 ```
 
 ## The catalog cleanup suite
@@ -109,17 +109,26 @@ exactly as powerful as it sounds.
 
 ## Install
 
-### Claude Code (or any Agent-Skills harness)
+### Claude Code (plugin, recommended)
+
+```bash
+/plugin marketplace add kgelster/awesome-ecom-skills
+/plugin install ecom@kgelster
+```
+
+Installs all nine skills as the `ecom` plugin; run `/reload-plugins` (or
+restart) to load them. They activate automatically when your prompt matches
+(e.g. "my Matrixify import wiped a bunch of metafields", "backfill alt text on
+my product photos", "map the old URLs after my replatform").
+
+### Manual copy (any Agent-Skills harness)
 
 ```bash
 git clone https://github.com/kgelster/awesome-ecom-skills
 cp -r awesome-ecom-skills/skills/* ~/.claude/skills/
 ```
 
-Each skill directory is self-contained; copy just the ones you want. The skills
-activate automatically when your prompt matches (e.g. "my Matrixify import wiped
-a bunch of metafields", "backfill alt text on my product photos", "map the old
-URLs after my replatform").
+Each skill directory is self-contained; copy just the ones you want.
 
 ### Other harnesses
 
