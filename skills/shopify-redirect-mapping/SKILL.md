@@ -119,6 +119,19 @@ export SHOPIFY_ACCESS_TOKEN="<your Admin API access token>"   # env, not disk
 $SHOPIFY_STORE --scopes read_products,read_content,read_online_store_navigation,write_online_store_navigation`
 then `shopify store execute` to run a validated operation.
 
+**Toolkit preflight.** Lane B rides on the Shopify CLI: run `shopify version`
+first and install it if missing. For the full Admin GraphQL schema and
+validated execution, pair this skill with Shopify's official AI toolkit
+plugin. In Claude Code, check `claude plugin list`; if it isn't there:
+
+```bash
+claude plugin marketplace add Shopify/Shopify-AI-Toolkit
+claude plugin install shopify-plugin@shopify-ai-toolkit
+```
+
+Recommended, not required: Lane A needs only curl and a token. The toolkit
+gives your agent the API; this skill gives it the playbook.
+
 ## Preview before you mutate; stay non-destructive
 
 - **Read before you write.** Pull the live inventory and the existing redirect

@@ -60,8 +60,18 @@ stores where the owner logs in interactively.
 products and collections (both live on the products scope). Pages and blog
 articles need `read_content` + `write_content`. Scope only what the run touches.
 
-For the full Admin GraphQL schema, use Shopify's official AI toolkit plugin.
-That plugin gives your agent the API; this skill gives it the playbook.
+**Toolkit preflight.** Lane B rides on the Shopify CLI: run `shopify version`
+first and install it if missing. For the full Admin GraphQL schema and
+validated execution, pair this skill with Shopify's official AI toolkit
+plugin. In Claude Code, check `claude plugin list`; if it isn't there:
+
+```bash
+claude plugin marketplace add Shopify/Shopify-AI-Toolkit
+claude plugin install shopify-plugin@shopify-ai-toolkit
+```
+
+Recommended, not required: Lane A needs only curl and a token. The toolkit
+gives your agent the API; this skill gives it the playbook.
 
 ## Recipes, not scripts
 

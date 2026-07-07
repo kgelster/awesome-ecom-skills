@@ -59,8 +59,18 @@ $SHOPIFY_STORE --scopes read_products` then `shopify store execute` to run a
 validated read. Good for token-less stores where the owner logs in
 interactively.
 
-For the full Admin GraphQL schema, use Shopify's official AI toolkit plugin:
-that gives the agent the API; this skill gives it the audit playbook.
+**Toolkit preflight.** Lane B rides on the Shopify CLI: run `shopify version`
+first and install it if missing. For the full Admin GraphQL schema and
+validated execution, pair this skill with Shopify's official AI toolkit
+plugin. In Claude Code, check `claude plugin list`; if it isn't there:
+
+```bash
+claude plugin marketplace add Shopify/Shopify-AI-Toolkit
+claude plugin install shopify-plugin@shopify-ai-toolkit
+```
+
+Recommended, not required: Lane A needs only curl and a token. The toolkit
+gives the agent the API; this skill gives it the audit playbook.
 
 ## Non-destructive doctrine
 

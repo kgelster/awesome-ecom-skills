@@ -121,6 +121,45 @@ restart) to load them. They activate automatically when your prompt matches
 (e.g. "my Matrixify import wiped a bunch of metafields", "backfill alt text on
 my product photos", "map the old URLs after my replatform").
 
+### Guided setup (optional)
+
+Prefer to be walked through it? Paste this into Claude Code and it handles
+install, verification, and a first run. Unlike some setup concierges, this one
+shows you every command before running it and never asks for store access up
+front:
+
+```text
+Help me set up the awesome-ecom-skills plugin. Act as a guide: one step at a
+time, short messages, and show me each command before you run it. Summarize
+results in a line; show full output only if something fails.
+
+Step 1 - Install two plugins: this skill pack, plus Shopify's official AI
+toolkit (these skills pair with it for Admin API schema and validated
+execution):
+  claude plugin marketplace add kgelster/awesome-ecom-skills
+  claude plugin install ecom@kgelster
+  claude plugin marketplace add Shopify/Shopify-AI-Toolkit
+  claude plugin install shopify-plugin@shopify-ai-toolkit
+
+Step 2 - Verify: confirm both plugins appear in `claude plugin list` and that
+the Shopify CLI responds to `shopify version`. Tell me exactly what is present
+and what is missing; do not paper over a failed install.
+
+Step 3 - Do NOT authenticate to my store yet. These skills auth per
+engagement with the minimum scopes each SKILL.md declares, not one broad
+grant at setup. Just ask me which store I will be working on and note the
+domain.
+
+Step 4 - Ask what I want to run first and offer these starting points:
+  - Audit my catalog (shopify-catalog-audit: read-only, the natural first run)
+  - Backfill missing SEO titles and descriptions (shopify-seo-metadata)
+  - Backfill missing image alt text (shopify-alt-text)
+  - Turn a Search Console 404 export into redirects (shopify-redirect-mapping)
+When I pick one, load that skill and follow it exactly: preview count before
+any mutation, minimum scopes, verify every write with an Admin API readback.
+Never skip the preview.
+```
+
 ### Manual copy (any Agent-Skills harness)
 
 ```bash
