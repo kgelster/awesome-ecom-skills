@@ -156,6 +156,15 @@ patterns) rather than eyeballing products one by one. Fix by rewriting
 `descriptionHtml` per product via `productUpdate`: a targeted string transform,
 not a from-scratch rewrite that would lose real formatting.
 
+**Log old and new for every rewrite.** As you go, write each rewrite (product
+id, old `descriptionHtml`, new `descriptionHtml`, status) to a CSV, the same
+discipline `shopify-seo-metadata` mandates for meta writes. That log is two
+things: your diff review (read a sample of old→new pairs before declaring
+done) and your only undo list. Archiving gets a dated tag to query for
+reversal; a rewrite has nothing, so without the log a bad transform is
+unrecoverable. This matters downstream too: skills that generate from body
+HTML (SEO meta, for one) inherit whatever a bad rewrite left behind.
+
 **Post-edit scan doctrine.** After ANY bulk content edit, sweep the affected
 scope again for residue: double-bold, orphaned tags, half-applied
 transforms, **before** you declare done. A bulk regex fix routinely leaves a

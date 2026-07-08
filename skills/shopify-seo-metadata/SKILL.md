@@ -131,6 +131,13 @@ mutation, and the content source field differ (all four are in the reference):
 - **Blog articles:** source = title + `summary` (+ parent blog title for
   context). Same `global.*_tag` metafields, same `metafieldsSet`.
 
+**The source data is the ceiling on output quality.** Products generate from
+body HTML: if a bulk description cleanup or rewrite just ran on this catalog
+(e.g. via `shopify-catalog-cleanup`), confirm its post-edit re-scan passed
+before you generate, or the products whose markup the transform mangled get
+that garbage baked into fresh meta at scale. Enrichment does not fix bad
+source data; it launders it into new fields.
+
 Log every write (resource id, field, old value, new value, status) to a CSV or
 newline log as you go. That log is your evidence and your retry list.
 
