@@ -9,12 +9,12 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-16a34a" alt="MIT license"></a>
   <a href="https://github.com/kgelster/awesome-ecom-skills/releases"><img src="https://img.shields.io/github/v/release/kgelster/awesome-ecom-skills?color=7c3aed" alt="Latest release"></a>
-  <img src="https://img.shields.io/badge/skills-9-2563eb" alt="9 skills">
+  <img src="https://img.shields.io/badge/skills-10-2563eb" alt="10 skills">
   <img src="https://img.shields.io/badge/Admin%20API-2025--07-0891b2" alt="Shopify Admin API 2025-07">
   <img src="https://img.shields.io/badge/Claude%20Code-plugin-d97706" alt="Claude Code plugin">
 </p>
 
-**Built for** Shopify merchants and the agencies who run their catalogs: taxonomy, SEO metadata, structured data, alt text, redirects, and bulk data at catalog scale. **Not** an app-dev or theme-dev kit, and no synthetic benchmark stat to sell you: just the operating knowledge that keeps an agent from quietly wrecking a live store.
+**Built for** Shopify merchants and the agencies who run their catalogs: taxonomy, SEO metadata, structured data, alt text, redirects, and bulk data at catalog scale, plus triaging the public app-store reviews an app team wakes up to. **Not** an app-dev or theme-dev kit, and no synthetic benchmark stat to sell you: just the operating knowledge that keeps an agent from quietly wrecking a live store.
 
 ```bash
 /plugin marketplace add kgelster/awesome-ecom-skills
@@ -75,10 +75,13 @@ The core of the repo: six skills for getting a messy catalog into shape, from fi
   </tr>
   <tr>
     <td align="center" width="33%" valign="top">
+      <a href="skills/shopify-review-triage/SKILL.md"><b>⭐ shopify-review-triage</b></a><br />
+      <sub>Sort public low-star App Store reviews into a P0–P3 brief. Keyword first pass, explicit needs-human-read bucket, every item source-linked and labeled unverified until a person checks it.</sub>
+    </td>
+    <td align="center" width="33%" valign="top">
       <a href="template/SKILL.md"><b>➕ contribute</b></a><br />
       <sub>Got a hard-won Shopify lesson? Copy the template and open a PR. Original prose, env-var secrets, preview-before-mutate, verify against ground truth.</sub>
     </td>
-    <td align="center" width="33%" valign="top"></td>
     <td align="center" width="33%" valign="top"></td>
   </tr>
 </table>
@@ -116,7 +119,7 @@ exactly as powerful as it sounds.
 /plugin install ecom@kgelster
 ```
 
-Installs all nine skills as the `ecom` plugin; run `/reload-plugins` (or
+Installs all ten skills as the `ecom` plugin; run `/reload-plugins` (or
 restart) to load them. They activate automatically when your prompt matches
 (e.g. "my Matrixify import wiped a bunch of metafields", "backfill alt text on
 my product photos", "map the old URLs after my replatform").

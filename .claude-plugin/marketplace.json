@@ -8,7 +8,7 @@
     {
       "name": "ecom",
       "source": "./",
-      "description": "Shopify agency playbooks as agent skills: catalog cleanup, SEO metadata, structured data, redirects, and landing pages.",
+      "description": "Shopify agency playbooks as agent skills: catalog cleanup, SEO metadata, structured data, redirects, landing pages, and app-review triage.",
       "category": "ecommerce",
       "tags": [
         "shopify",
@@ -17,6 +17,7 @@
         "structured-data",
         "matrixify",
         "catalog",
+        "app-reviews",
         "agent-skills"
       ]
     }

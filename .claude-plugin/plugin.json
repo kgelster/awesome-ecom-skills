@@ -1,7 +1,7 @@
 {
   "name": "ecom",
   "version": "1.0.0",
-  "description": "Agent skills for running a Shopify store with a coding agent: catalog cleanup (category taxonomy, audits, SEO metadata, alt text, Matrixify), URL redirect mapping, JSON-LD structured data, and landing-page ideation. The playbook companion to Shopify's official AI toolkit. Distilled from real agency work.",
+  "description": "Agent skills for running a Shopify store with a coding agent: catalog cleanup (category taxonomy, audits, SEO metadata, alt text, Matrixify), URL redirect mapping, JSON-LD structured data, landing-page ideation, and public app-review triage. The playbook companion to Shopify's official AI toolkit. Distilled from real agency work.",
   "author": {
     "name": "Kurt Elster"
   },
@@ -14,6 +14,7 @@
     "seo",
     "structured-data",
     "matrixify",
+    "app-reviews",
     "agent-skills",
     "claude-code"
   ]
