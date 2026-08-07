@@ -201,6 +201,11 @@ and follow its authoring notes: original prose (no docs paste), read secrets
 from the environment, preview-before-mutate and safe-mode defaults, and show the
 reader how to verify the change via the Admin API. PRs welcome.
 
+Every PR validates each `SKILL.md` against the
+[Agent Skills spec](https://agentskills.io/specification) via
+`.github/scripts/validate_skills.py`. Run the same check before you commit with
+`git config core.hooksPath .githooks`.
+
 ## Versions tested
 
 Distilled against **Shopify Admin API 2025-07** in July 2026. Shopify deprecates

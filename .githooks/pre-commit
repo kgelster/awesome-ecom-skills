@@ -1,0 +1,27 @@
+#!/bin/sh
+# Validate staged SKILL.md files against the Agent Skills spec before committing.
+# Enable in a fresh clone with:  git config core.hooksPath .githooks
+
+staged=$(git diff --cached --name-only --diff-filter=ACM | grep 'SKILL\.md$')
+[ -z "$staged" ] && exit 0
+
+script=".github/scripts/validate_skills.py"
+[ -f "$script" ] || exit 0
+
+# PyYAML is required. Prefer a python3 that already has it; otherwise use uv,
+# which fetches it into a throwaway env without touching the system install.
+if python3 -c 'import yaml' 2>/dev/null; then
+  run="python3"
+elif command -v uv >/dev/null 2>&1; then
+  run="uv run --quiet --with pyyaml python3"
+else
+  echo "pre-commit: skipping SKILL.md validation (no PyYAML and no uv)." >&2
+  exit 0
+fi
+
+# shellcheck disable=SC2086
+echo "$staged" | xargs $run "$script" || {
+  echo >&2
+  echo "pre-commit: SKILL.md failed spec validation. Fix the errors above, or bypass with --no-verify." >&2
+  exit 1
+}

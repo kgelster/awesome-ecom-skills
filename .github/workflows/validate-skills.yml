@@ -1,0 +1,30 @@
+name: Validate Skills
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**/SKILL.md"
+      - ".github/scripts/validate_skills.py"
+      - ".github/workflows/validate-skills.yml"
+  pull_request:
+    paths:
+      - "**/SKILL.md"
+      - ".github/scripts/validate_skills.py"
+      - ".github/workflows/validate-skills.yml"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install pyyaml
+
+      - name: Validate SKILL.md against the Agent Skills spec
+        run: python3 .github/scripts/validate_skills.py
