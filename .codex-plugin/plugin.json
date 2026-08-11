@@ -1,0 +1,37 @@
+{
+  "name": "ecom",
+  "description": "Agent skills for running a Shopify store with a coding agent: catalog cleanup, category taxonomy, SEO metadata, alt text, Matrixify, redirects, JSON-LD, and landing-page ideation",
+  "version": "1.0.0",
+  "author": {
+    "name": "Kurt Elster",
+    "url": "https://github.com/kgelster"
+  },
+  "homepage": "https://github.com/kgelster/awesome-ecom-skills",
+  "repository": "https://github.com/kgelster/awesome-ecom-skills",
+  "license": "MIT",
+  "keywords": [
+    "shopify",
+    "ecommerce",
+    "seo",
+    "structured-data",
+    "matrixify"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Ecom Skills",
+    "shortDescription": "Shopify agency playbooks as agent skills.",
+    "longDescription": "Nine skills distilled from real agency work: catalog audit and cleanup, Standard Product Taxonomy assignment, SEO metadata backfill, image alt text, Matrixify bulk-data doctrine, URL redirect mapping, JSON-LD structured data, and landing-page ideation. The judgment layer on top of Shopify's official AI toolkit.",
+    "developerName": "Kurt Elster",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/kgelster/awesome-ecom-skills",
+    "defaultPrompt": [
+      "Audit my Shopify catalog for missing photos and thin descriptions.",
+      "Backfill missing SEO titles and descriptions on my products.",
+      "Build the redirect map for my replatform."
+    ]
+  }
+}

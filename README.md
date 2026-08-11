@@ -14,6 +14,10 @@
   <img src="https://img.shields.io/badge/Claude%20Code-plugin-d97706" alt="Claude Code plugin">
 </p>
 
+<p align="center">
+  <img src="media/hero.png" alt="awesome-ecom-skills: 9 Claude agent skills for Shopify. Shopify's plugin gives your agent the API; this gives it the playbook." width="800">
+</p>
+
 **Built for** Shopify merchants and the agencies who run their catalogs: taxonomy, SEO metadata, structured data, alt text, redirects, and bulk data at catalog scale. **Not** an app-dev or theme-dev kit, and no synthetic benchmark stat to sell you: just the operating knowledge that keeps an agent from quietly wrecking a live store.
 
 ```bash
@@ -51,7 +55,7 @@ The core of the repo: six skills for getting a messy catalog into shape, from fi
     </td>
     <td align="center" width="33%" valign="top">
       <a href="skills/shopify-matrixify/SKILL.md"><b>📦 shopify-matrixify</b></a><br />
-      <sub>The bulk-data workhorse. Backup-export-first doctrine, MERGE vs REPLACE, the blank-cell-deletes-a-metafield trap, and programmatic CSV generation rules.</sub>
+      <sub>The bulk-data workhorse. Backup-export-first doctrine, MERGE vs REPLACE, the blank-cell-deletes-a-metafield trap, and programmatic CSV generation rules. Also ships <a href="https://github.com/kgelster/shopify-matrixify-skill">standalone</a>.</sub>
     </td>
   </tr>
 </table>
@@ -158,6 +162,16 @@ Step 4 - Ask what I want to run first and offer these starting points:
 When I pick one, load that skill and follow it exactly: preview count before
 any mutation, minimum scopes, verify every write with an Admin API readback.
 Never skip the preview.
+```
+
+### Codex, Cursor, and friends (skills CLI)
+
+The `skills` CLI installs straight from this repo into any agent that reads
+`SKILL.md` skills:
+
+```bash
+npx skills add https://github.com/kgelster/awesome-ecom-skills           # pick from all nine
+npx skills add https://github.com/kgelster/awesome-ecom-skills --skill shopify-matrixify
 ```
 
 ### Manual copy (any Agent-Skills harness)
