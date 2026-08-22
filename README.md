@@ -1,5 +1,7 @@
 <!-- ship the cart, not the code -->
 
+# awesome-ecom-skills
+
 <p align="center">
   <b>Shopify's plugin gives your agent the API. This gives it the playbook.</b>
 </p>
@@ -20,7 +22,9 @@
 
 **Built for** Shopify merchants and the agencies who run their catalogs: taxonomy, SEO metadata, structured data, alt text, redirects, and bulk data at catalog scale. **Not** an app-dev or theme-dev kit, and no synthetic benchmark stat to sell you: just the operating knowledge that keeps an agent from quietly wrecking a live store.
 
-```bash
+Inside Claude Code:
+
+```text
 /plugin marketplace add kgelster/awesome-ecom-skills
 /plugin install ecom@kgelster
 ```
@@ -115,7 +119,7 @@ exactly as powerful as it sounds.
 
 ### Claude Code (plugin, recommended)
 
-```bash
+```text
 /plugin marketplace add kgelster/awesome-ecom-skills
 /plugin install ecom@kgelster
 ```
