@@ -11,7 +11,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-16a34a" alt="MIT license"></a>
   <a href="https://github.com/kgelster/awesome-ecom-skills/releases"><img src="https://img.shields.io/github/v/release/kgelster/awesome-ecom-skills?color=7c3aed" alt="Latest release"></a>
-  <img src="https://img.shields.io/badge/skills-9-2563eb" alt="9 skills">
+  <img src="https://img.shields.io/badge/skills-10-2563eb" alt="10 skills">
   <img src="https://img.shields.io/badge/Admin%20API-2025--07-0891b2" alt="Shopify Admin API 2025-07">
   <img src="https://img.shields.io/badge/Claude%20Code-plugin-d97706" alt="Claude Code plugin">
 </p>
@@ -83,10 +83,13 @@ The core of the repo: six skills for getting a messy catalog into shape, from fi
   </tr>
   <tr>
     <td align="center" width="33%" valign="top">
+      <a href="skills/shopify-collection-meta-review/SKILL.md"><b>🧾 shopify-collection-meta-review</b></a><br />
+      <sub>Turn collection metadata into a controlled review queue: stable keys, duplicate checks, character-count signals, Draft/Ready/Published/Hold handoff, and verified publication boundaries.</sub>
+    </td>
+    <td align="center" width="33%" valign="top">
       <a href="template/SKILL.md"><b>➕ contribute</b></a><br />
       <sub>Got a hard-won Shopify lesson? Copy the template and open a PR. Original prose, env-var secrets, preview-before-mutate, verify against ground truth.</sub>
     </td>
-    <td align="center" width="33%" valign="top"></td>
     <td align="center" width="33%" valign="top"></td>
   </tr>
 </table>
@@ -124,7 +127,7 @@ exactly as powerful as it sounds.
 /plugin install ecom@kgelster
 ```
 
-Installs all nine skills as the `ecom` plugin; run `/reload-plugins` (or
+Installs all ten skills as the `ecom` plugin; run `/reload-plugins` (or
 restart) to load them. They activate automatically when your prompt matches
 (e.g. "my Matrixify import wiped a bunch of metafields", "backfill alt text on
 my product photos", "map the old URLs after my replatform").
