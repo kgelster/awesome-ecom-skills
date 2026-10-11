@@ -61,7 +61,9 @@ store.
    is the single most expensive trap in Matrixify. If your sheet has a
    `Metafield: custom.care [multi_line_text_field]` column and a product's cell
    is empty, the import writes *empty*, wiping the existing metafield. Same for
-   any field: blank Body HTML clears the description, blank Vendor errors out.
+   fields that support clearing: blank Body HTML clears the description. A blank
+   Vendor does not error or stay empty: Shopify substitutes the store name, per
+   the [Products documentation](https://matrixify.app/documentation/products/).
    **Only include columns you intend to change.** The fix is column *omission*,
    not blank cells. Absent column = untouched; present-but-blank column =
    deleted.
