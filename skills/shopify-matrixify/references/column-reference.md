@@ -20,7 +20,8 @@ few records and read the header row.
 - **Command**: NEW / MERGE / UPDATE / REPLACE / DELETE / IGNORE.
 - **Title**: the only mandatory field for a new product.
 - **Body HTML**: description (plain text or HTML). Blank cell clears it.
-- **Vendor**: brand; Shopify requires it non-empty.
+- **Vendor**: brand; a blank imported value is replaced with the store name,
+  rather than left empty (see the [Products documentation](https://matrixify.app/documentation/products/)).
 - **Type**: product type / classification.
 - **Tags**: comma-separated. Always pair with **Tags Command**.
 - **Tags Command**: MERGE (add) / DELETE (remove listed) / REPLACE (exact list).
@@ -54,7 +55,10 @@ few records and read the header row.
 - **Option3 Name** / **Option3 Value**: max three options per product.
 
 Each variant needs a unique Option1/Option2/Option3 combination within the
-product. Max 100 variants per product.
+product. The [current Matrixify limits documentation](https://matrixify.app/documentation/shopify-limits/)
+lists 2,048 variants per product. Some themes and apps still support only 100;
+check the store's theme and dependent apps before importing above that count.
+Re-confirm the current limit before relying on it.
 
 ### Image fields
 
